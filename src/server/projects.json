@@ -1,0 +1,16 @@
+[
+    {
+        "name": "mizuki",
+        "tags": "discord, bot, regex, roblox, moderation, dev, hsr, multipurpose, discord, datamining",
+        "link": "https://github.com/nakoyasha/mizuki",
+        "description": "Multipurpose bot that includes features useful for server owners, players of a specific gacha game, and for people who want to make silly gifs.",
+        "icon": "https://raw.githubusercontent.com/nakoyasha/mizuki/main/assets/mizuki.png"
+    },
+    {
+        "name": "saeko",
+        "tags": "backup, csharp, cmd",
+        "link": "https://github.com/nakoyasha/saeko",
+        "description": "An automatic backup utility for user folders written in C#.",
+        "icon": "assets/img/default.png"
+    }
+]

@@ -1,0 +1,177 @@
+:root {
+  --background-color: rgba(40, 40, 40, 1);
+  --menubar-background: rgba(60, 60, 60, 1);
+  --footer-background: rgba(60, 60, 60, .2);
+  --button-background: rgba(46, 45, 45, 0.541);
+  --button-background-hover: rgba(50, 50, 50, 0.8);
+  --button-stroke: rgba(255, 255, 255, 0.05);
+}
+
+@font-face {
+  font-family: 'Gotham Rounded Bold';
+  src: url('/assets/fonts/GothamRounded-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gotham Rounded Medium';
+  src: url('/assets/fonts/GothamRounded-Medium.otf') format('opentype');
+  font-weight: medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gotham Rounded Regular';
+  src: url('/assets/fonts/GothamRounded-Book.otf') format('opentype');
+  font-weight: regular;
+  font-style: normal;
+}
+
+body {
+  background-image: url("/assets/img/background-grid.png");
+  background-color: var(--background-color);
+  background-blend-mode: overlay;
+}
+
+.menhera-div {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.error-frame {
+  display: flex;
+  flex-flow: column;
+
+  color: white;
+  font-size: 200%;
+  font-family: "Gotham Rounded Bold";
+  font-weight: bold;
+  overflow: hidden;
+
+  /* % and vh crop it ???? whyy */
+  height: 350px;
+  width: 350px;
+  margin: 20px;
+}
+
+.full-page {
+  width: 100%;
+  height: 100vh;
+}
+
+.stroke {
+    border: 2px solid var(--button-stroke);
+}
+
+.menhera-button {
+  display: flex;
+  flex-direction: row;
+  
+  background-color: var(--button-background);
+  border: 1px solid var(--button-stroke);
+  padding: 8px;
+  margin: 8px;
+
+  height: 15%;
+  border-radius: 8px;
+  align-items: center;
+
+  font-family: "Gotham Rounded Regular";
+  font-weight: normal;
+  font-size: 50%;
+  white-space: nowrap;
+  width: fit-content;
+  height: fit-content;
+}
+
+.menhera-button:hover {
+  background-color: var(--button-background-hover)
+}
+
+.menuBar {
+  display: flex;
+  overflow: hidden;
+  background-color: var(--menubar-background);
+  width: 100%;
+  height: 46px;
+  z-index: auto;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 15px;
+  pointer-events: all;
+}
+
+.menuBarItem {
+  font-family: 'Gotham Rounded Regular';
+  font-size: medium;
+  border: none;
+  outline: none;
+  height: fit-content;
+  width: fit-content;
+  text-decoration: none;
+  color: white;
+  padding-left: 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.menuBar-logo {
+  width: 100%;
+}
+
+.menuBarItem:hover {
+  color: rgb(192, 120, 170);
+}
+
+.evil-evil-div {
+  transform: rotate(10deg);
+}
+
+.menhera-footer {
+  /* ensures it always stays at the bottom! */
+  margin-top: 20vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: var(--footer-background);
+  color: white;
+  text-align: center;
+  font-family: "Gotham Rounded Regular";
+  height: fit-content;
+  padding: 15px;
+}
+
+.basic-link {
+  font-family: "Gotham Rounded Regular";
+  color: rgba(255, 255, 255, .5);
+  margin: 5px;
+  text-decoration: none;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: solid;
+}
+
+p {
+  font-family: "Gotham Rounded Regular";
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
