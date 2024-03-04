@@ -3,7 +3,8 @@
   "version": "0.0.1b",
   "description": ":3",
   "scripts": {
-    "start": "npx nodemon -w src -e tsx,ts src/index.ts"
+    "start": "npx nodemon -w src -e tsx,ts src/index.ts",
+    "blank": "echo yep. its building alright trust me 👍"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
   "author": "haruka",
