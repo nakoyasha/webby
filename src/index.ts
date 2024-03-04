@@ -3,7 +3,7 @@ import child_process from "child_process"
 import { join } from "path"
 const server = express()
 
-import { readFileSync, readdirSync } from "fs"
+import { writeFileSync, readFileSync, readdirSync } from "fs"
 import matter, { read } from "gray-matter"
 import ejs from "ejs"
 import highlightjs from "highlight.js"
@@ -64,10 +64,21 @@ server.set("view engine", "ejs")
 
 server.get("/", async (req, res) => {
     const meData = JSON.parse(readFileSync(DATA_LOCATION + "/me.json", { encoding: "utf8", flag: "r" }))
+    writeFileSync(`build/index.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+        build_id: BUILD_ID,
+        build_date: BUILD_DATE,
+        page: "home",
+        my: meData
+    }))
     res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "home", my: meData })
 })
 
-server.get("/projects", (req, res) => {
+server.get("/projects", async (req, res) => {
+    writeFileSync(`build/projects.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+        build_id: BUILD_ID,
+        build_date: BUILD_DATE,
+        page: "projects",
+    }))
     res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "projects" })
 })
 
@@ -79,6 +90,13 @@ server.get("/blog", async (req, res) => {
         posts.push(getPostMetadata(file))
     })
 
+    writeFileSync(`build/blog/index.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+        build_id: BUILD_ID,
+        build_date: BUILD_DATE,
+        page: "blog",
+        posts: posts
+    }))
+
     res.render('index', {
         build_id: BUILD_ID,
         build_date: BUILD_DATE,
@@ -87,7 +105,7 @@ server.get("/blog", async (req, res) => {
     })
 })
 
-server.get("/blog/:blogId", (req, res) => {
+server.get("/blog/:blogId", async (req, res) => {
     const blogId = req.params.blogId
     const md = markdown({
         html: true,
@@ -108,6 +126,13 @@ server.get("/blog/:blogId", (req, res) => {
         const post = getPostMetadata(`${blogId}.md`)
         const renderedContent = md.render(post.content)
         post.content = renderedContent
+
+        writeFileSync(`build/blog/${blogId}`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+            build_id: BUILD_ID,
+            build_date: BUILD_DATE,
+            page: "blogPost",
+            post: post,
+        }))
 
         res.render('index', {
             build_id: BUILD_ID,
