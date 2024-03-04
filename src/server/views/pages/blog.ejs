@@ -1,0 +1,10 @@
+<p class="page-title">posts</p>
+<div class="blog-list">
+
+  <% posts.forEach((post)=>{ %>
+  <a class="make-bold-tag-fancy-pls blog-top blog-list-post menhera-outline" href=/blog/<%=post.name%>>
+    <h3><b><%= post.title %></h3></b>
+    <p class=" blog-description"><%=post.description%> • <%=post.date%></p>
+  </a>
+  <% }) %>
+</div>

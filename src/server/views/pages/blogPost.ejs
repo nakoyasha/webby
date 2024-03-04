@@ -1,0 +1,25 @@
+<p class="page-title page-title-fix-home">blog/<%=post.name%></p>
+<div>
+  <div class="blog-return-container">
+    <a class="blog-return" href="/blog">
+      <!-- this is <, done like this because otherwise formatting dies :airicry:-->
+      &lt; Return to posts
+    </a>
+  </div>
+
+  <div class="blog-div">
+    <div class="make-bold-tag-fancy-pls blog-top">
+      <h1><b><%=post.title%></b></h1>
+      <div class="description-and-date">
+        <i class="blog-description"><%=post.description%></b></i>
+
+        <p class="blog-description">• <%=post.date%></p>
+      </div>
+      <div class="blog-separator"></div>
+    </div>
+
+    <div class="blog-content gotham-font">
+      <%-post.content %>
+    </div>
+  </div>
+</div>

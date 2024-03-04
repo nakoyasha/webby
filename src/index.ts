@@ -1,33 +1,138 @@
-import express from "express"
+import express, { Response, json } from "express"
 import child_process from "child_process"
+import { join } from "path"
 const server = express()
 
+import { readFileSync, readdirSync } from "fs"
+import matter, { read } from "gray-matter"
+import ejs from "ejs"
+import highlightjs from "highlight.js"
+
+import markdown from "markdown-it"
+import { render } from "pug"
+
+export type PostMetadata = {
+    name: string,
+    title: string,
+    description: string,
+    content: string,
+    date: string,
+}
+
+// CAUTION! very dangerous and scary git command ahead..
 const BUILD_ID = child_process
-    .execSync('git rev-parse HEAD')
+    .execSync('git rev-parse --short HEAD')
     .toString().trim() || "dev"
 const BUILD_DATE = new Date(Date.now()).toString()
 
+const VIEWS_LOCATION = join(__dirname, "server/views")
+const DATA_LOCATION = join(__dirname, "server/data")
+const POSTS_LOCATION = join(__dirname, "server/data/posts")
+
+function renderNotFound(res: Response) {
+    res.render("index", {
+        build_id: BUILD_ID,
+        build_date: BUILD_DATE,
+        page: "404",
+    })
+}
+
+function getPostMetadata(file: string): PostMetadata {
+    const metadata = matter.read(POSTS_LOCATION + `/${file}`)
+
+    return {
+        name: file.replace(".md", ""),
+        title: metadata.data.title,
+        description: metadata.data.description,
+        content: metadata.content,
+        date: metadata.data.date,
+    }
+}
 
 
-server.use((request, response, nextConsumer) => {
+server.use((_, response, nextConsumer) => {
     response.set("X-Powered-By", "menhera")
     nextConsumer()
 })
 
+server.use(express.static("src/server/data"))
 server.use(express.static("public"))
+
+// 
+server.set("views", join(__dirname, "server/views"))
 server.set("view engine", "ejs")
 
-server.get("/", (req, res) => {
-    res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "home" })
+server.get("/", async (req, res) => {
+    const meData = JSON.parse(readFileSync(DATA_LOCATION + "/me.json", { encoding: "utf8", flag: "r" }))
+    res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "home", my: meData })
 })
 
 server.get("/projects", (req, res) => {
     res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "projects" })
 })
 
-server.get("/*", (req, res) => {
-    res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "404", evil: "evil-evil-div" })
+server.get("/blog", async (req, res) => {
+    const posts = [] as PostMetadata[]
+    const markdownFiles = readdirSync(POSTS_LOCATION).filter((post) => post.endsWith(".md"))
+
+    await markdownFiles.forEach((file) => {
+        posts.push(getPostMetadata(file))
+    })
+
+    res.render('index', {
+        build_id: BUILD_ID,
+        build_date: BUILD_DATE,
+        page: "blog",
+        posts: posts
+    })
 })
+
+server.get("/blog/:blogId", (req, res) => {
+    const blogId = req.params.blogId
+    const md = markdown({
+        html: true,
+        langPrefix: "hljs language-",
+
+        highlight: function (str, lang) {
+            if (lang && highlightjs.getLanguage(lang)) {
+                try {
+                    return highlightjs.highlight(str, { language: lang }).value;
+                } catch (__) { }
+            }
+
+            return ''; // use external default escaping
+        }
+    })
+
+    try {
+        const post = getPostMetadata(`${blogId}.md`)
+        const renderedContent = md.render(post.content)
+        post.content = renderedContent
+
+        res.render('index', {
+            build_id: BUILD_ID,
+            build_date: BUILD_DATE,
+            page: "blogPost",
+            post: post,
+        })
+    } catch (err) {
+        console.log(`: ${err}`)
+        renderNotFound(res)
+    }
+})
+
+server.get("/*", (req, res) => {
+    res.status(404)
+
+    if (req.accepts("html")) {
+        renderNotFound(res)
+    } else {
+        res.send({
+            message: "404 - page not found"
+        })
+    }
+})
+
 
 server.listen(3000, () => {
     console.log("silly webiste is listening on port 3000!")
