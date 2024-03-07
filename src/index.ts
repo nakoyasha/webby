@@ -64,21 +64,25 @@ server.set("view engine", "ejs")
 
 server.get("/", async (req, res) => {
     const meData = JSON.parse(readFileSync(DATA_LOCATION + "/me.json", { encoding: "utf8", flag: "r" }))
-    writeFileSync(`build/index.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
-        build_id: BUILD_ID,
-        build_date: BUILD_DATE,
-        page: "home",
-        my: meData
-    }))
+    // writeFileSync(`build/index.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+    //     build_id: BUILD_ID,
+    //     build_date: BUILD_DATE,
+    //     page: "home",
+    //     my: meData
+    // }))
     res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "home", my: meData })
 })
 
+server.get("/sekai-stickers", async (req, res) => {
+    res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "sekaiStickers" })
+})
+
 server.get("/projects", async (req, res) => {
-    writeFileSync(`build/projects.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
-        build_id: BUILD_ID,
-        build_date: BUILD_DATE,
-        page: "projects",
-    }))
+    // writeFileSync(`build/projects.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+    //     build_id: BUILD_ID,
+    //     build_date: BUILD_DATE,
+    //     page: "projects",
+    // }))
     res.render('index', { build_id: BUILD_ID, build_date: BUILD_DATE, page: "projects" })
 })
 
@@ -90,12 +94,12 @@ server.get("/blog", async (req, res) => {
         posts.push(getPostMetadata(file))
     })
 
-    writeFileSync(`build/blog/index.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
-        build_id: BUILD_ID,
-        build_date: BUILD_DATE,
-        page: "blog",
-        posts: posts
-    }))
+    // writeFileSync(`build/blog/index.html`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+    //     build_id: BUILD_ID,
+    //     build_date: BUILD_DATE,
+    //     page: "blog",
+    //     posts: posts
+    // }))
 
     res.render('index', {
         build_id: BUILD_ID,
@@ -127,12 +131,12 @@ server.get("/blog/:blogId", async (req, res) => {
         const renderedContent = md.render(post.content)
         post.content = renderedContent
 
-        writeFileSync(`build/blog/${blogId}`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
-            build_id: BUILD_ID,
-            build_date: BUILD_DATE,
-            page: "blogPost",
-            post: post,
-        }))
+        // writeFileSync(`build/blog/${blogId}`, await ejs.renderFile(VIEWS_LOCATION + '/index.ejs', {
+        //     build_id: BUILD_ID,
+        //     build_date: BUILD_DATE,
+        //     page: "blogPost",
+        //     post: post,
+        // }))
 
         res.render('index', {
             build_id: BUILD_ID,
@@ -159,6 +163,6 @@ server.get("/*", (req, res) => {
 })
 
 
-server.listen(3000, () => {
-    console.log("silly webiste is listening on port 3000!")
+server.listen(80, () => {
+    console.log("silly website is listening on port 80!")
 })

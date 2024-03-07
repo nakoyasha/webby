@@ -1,0 +1,31 @@
+.controls-div {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+
+input {
+    accent-color: var(--accent-color);
+    background-color: var(--menubar-background);
+    border: none;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: medium;
+}
+
+.sekai-stickers {
+    scale: 150%;
+}
+
+.sticker-text {
+    position: absolute;
+    font-family: "Yuruka";
+    color: #6495f0;
+    -webkit-text-fill-color: #6495f0;
+    /* Will override color (regardless of order) */
+    -webkit-text-stroke: 2px white;
+    left: 50px;
+    font-size: 25px;
+}

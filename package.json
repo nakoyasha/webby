@@ -4,6 +4,7 @@
   "description": ":3",
   "scripts": {
     "start": "npx nodemon -w src -e tsx,ts src/index.ts",
+    "build": "ts-node src/scripts/makeStaticBuild.ts",
     "blank": "echo yep. its building alright trust me 👍"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
@@ -11,7 +12,6 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "yarn": "^1.22.21",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.17.21",
     "@types/highlight.js": "^10.1.0",
@@ -25,7 +25,7 @@
     "nodemon": "^3.1.0",
     "pug": "^3.0.2",
     "ts-node": "^10.9.2",
-    "tsc": "^2.0.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "yarn": "^1.22.21"
   }
 }
