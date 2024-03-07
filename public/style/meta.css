@@ -234,7 +234,9 @@ body {
 }
 
 .blog-return-container {
+  position: absolute;
   padding: 15px;
+  top: 35px;
 }
 
 .blog-return:hover {
