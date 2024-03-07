@@ -20,9 +20,10 @@ export type PostMetadata = {
 }
 
 // CAUTION! very dangerous and scary git command ahead..
-const BUILD_ID = child_process
-    .execSync('git rev-parse --short HEAD')
-    .toString().trim() || "dev"
+// const BUILD_ID = child_process
+//     .execSync('git rev-parse --short HEAD')
+//     .toString().trim() || "dev"
+const BUILD_ID = "infdev"
 const BUILD_DATE = new Date(Date.now()).toString()
 
 const VIEWS_LOCATION = join(__dirname, "server/views")
