@@ -120,12 +120,13 @@ export const server = {
                     page: "error",
                     message: "The server is currently busy fetching builds. Please wait !!"
                 })
+                return;
             }
 
             const timeElapsedSinceLastFetch = (Date.now() - this.lastBuildFetch) / 1000
 
             if (this.fetchedBuilds == null || timeElapsedSinceLastFetch >= 60) {
-                this.currentlyFetchingBuilds == true
+                this.currentlyFetchingBuilds = true
                 console.log("Fetching discord builds..")
                 let rawBuilds = await database.getBuilds()
                 let builds = [] as BuildMetadata[]
@@ -142,7 +143,7 @@ export const server = {
                 })
 
                 this.fetchedBuilds = builds
-                this.currentlyFetchingBuilds == false
+                this.currentlyFetchingBuilds = false
                 this.lastBuildFetch = Date.now()
                 console.log("Finished fetching builds")
             }
