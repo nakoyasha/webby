@@ -3,8 +3,8 @@
   "version": "0.0.1b",
   "description": ":3",
   "scripts": {
-    "dev": "npx nodemon -w src -e tsx,ts src/index.ts",
-    "prod": "ts-node src/index.ts",
+    "dev": "export NODE_ENV=development || set NODE_ENV=development && npx nodemon -w src -e tsx,ts src/index.ts",
+    "prod": "export NODE_ENV=production || set NODE_ENV=production && npx ts-node src/index.ts",
     "build": "ts-node src/scripts/makeStaticBuild.ts",
     "blank": "echo yep. its building alright trust me 👍"
   },
