@@ -6,6 +6,7 @@ import matter from "gray-matter"
 import highlightjs from "highlight.js"
 
 import markdown from "markdown-it"
+import { rateLimit } from 'express-rate-limit'
 import { database } from "@system/database"
 
 export type PostMetadata = {
@@ -46,6 +47,16 @@ export const server = {
         }
     },
 
+    fetchedBuilds: null as BuildMetadata[] | null,
+    lastBuildFetch: Date.now(),
+
+    limiter: rateLimit({
+        windowMs: 60000, // 1 minute per 25 requests
+        limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+        standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+        legacyHeaders: true,
+
+    }),
     init: function () {
         this.server.use((_, response, nextConsumer) => {
             response.set("X-Powered-By", "menhera")
@@ -95,24 +106,35 @@ export const server = {
             })
         })
 
-        this.server.get("/trackers/discord", async (req, res) => {
-            const rawBuilds = await database.getBuilds()
-            const builds = [] as BuildMetadata[]
+        // TODO: figure out a better way to reduce memory usage
+        // currently too many requests hitting this endpoint will result in memory not being cleared properly;
+        // so the server gets killed by the oom killer
+        this.server.get("/trackers/discord", this.limiter, async (req, res) => {
+            const timeElapsedSinceLastFetch = (Date.now() - this.lastBuildFetch) / 1000
 
-            rawBuilds.forEach(build => {
-                if (!build.BuildNumber.startsWith("not-a-real-build")) {
-                    builds.push({
-                        name: build.BuildNumber,
-                        title: `Build ${build.BuildNumber}`,
-                        description: "kerfus build :3",
-                        date: new Date((build.Date as number)).toLocaleDateString(),
-                    })
-                }
-            })
+            if (this.fetchedBuilds == null || timeElapsedSinceLastFetch >= 60) {
+                console.log("Fetching discord builds..")
+                let rawBuilds = await database.getBuilds()
+                let builds = [] as BuildMetadata[]
+
+                rawBuilds.forEach(build => {
+                    if (!build.BuildNumber.startsWith("not-a-real-build")) {
+                        builds.push({
+                            name: build.BuildNumber,
+                            title: `Build ${build.BuildNumber}`,
+                            description: "kerfus build :3",
+                            date: new Date((build.Date as number)).toLocaleDateString(),
+                        })
+                    }
+                })
+
+                this.fetchedBuilds = builds
+                this.lastBuildFetch = Date.now()
+            }
 
             res.render('index', {
                 page: "trackers/discord/builds",
-                builds: builds,
+                builds: this.fetchedBuilds,
             })
         })
 
