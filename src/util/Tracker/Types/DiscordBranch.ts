@@ -1,0 +1,1 @@
+export type DiscordBranch = "stable" | "ptb" | "canary"

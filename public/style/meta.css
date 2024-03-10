@@ -7,7 +7,37 @@
   --button-background-hover: rgba(50, 50, 50, 0.8);
   --button-stroke: rgba(255, 255, 255, 0.05);
   --critical: rgb(129, 48, 61);
+
+  --build-list-grid-size: 230px;
 }
+
+/* @media only screen and (max-width: 200px) {
+  .build-list {
+    background-color: red;
+      grid-template-columns: repeat(2, var(--build-list-grid-size)) !important
+    }
+}
+
+@media only screen and (min-width: 600px) {
+  .build-list {
+    background-color: green;
+    grid-template-columns: repeat(4, var(--build-list-grid-size));
+  }
+}
+
+@media only screen and (min-width: 955px) {
+  .build-list {
+    background-color: green;
+    grid-template-columns: repeat(4, var(--build-list-grid-size));
+  }
+}
+
+@media only screen and (min-width: 1235px) {
+  .build-list {
+        background-color: green;
+    grid-template-columns: repeat(5, var(--build-list-grid-size));
+  }
+} */
 
 body {
   background-image: url("/assets/img/background-grid.png");
@@ -74,10 +104,13 @@ body {
 
   /* font-family: "Gotham Rounded Regular"; */
   font-weight: normal;
-  font-size: 50%;
   white-space: nowrap;
   width: fit-content;
   height: fit-content;
+}
+
+.make-button-smol {
+  font-size: 60%;
 }
 
 .menhera-button:hover {
@@ -127,6 +160,37 @@ body {
   width: 100%;
 }
 
+.topbar-margin {
+  padding-top: 70px;
+}
+
+.build-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, var(--build-list-grid-size));
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  width: 70%;
+}
+
+.build-list-gap {
+  gap: 25px;
+}
+
+.build-list-build {
+  display: flex;
+  aspect-ratio: 2.5;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(61, 46, 66, 1);
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
 .page-title {
   position: absolute;
   color: var(--accent-color);
@@ -159,11 +223,12 @@ body {
   cursor: pointer;
 }
 
+.build-list-build:hover {
+  background-color: rgb(74, 56, 80);
+}
+
 .blog-list-post:hover {
-  background-color: rgb(61,46,66);
-  padding: 20px;
-  width: fit-content;
-  cursor: pointer;
+  background-color: rgb(74, 56, 80);
 }
 
 .menuBar-logo {
@@ -190,6 +255,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.vertical-center-thing {
+  display: flex;
+  flex-direction: column;
 }
 
 .blog-content {
@@ -236,7 +306,7 @@ body {
 .blog-return-container {
   position: absolute;
   padding: 15px;
-  top: 35px;
+  top: 50px;
 }
 
 .blog-return:hover {
@@ -323,6 +393,109 @@ a:hover {
   top: 15px;
   right: 5px;
 }
+
+.build-indicators {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 5px;
+  justify-content: flex-end;
+  bottom: 40px;
+  width: 100%;
+  left: 15px;
+}
+
+.build-info {
+  position: absolute;
+  text-wrap: stable;
+  width: 20%;
+}
+
+.build-indicator {
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  height: 8px;
+  width: 8px;
+}
+
+.build-indicator-canary {
+  background-color: #faa926;
+}
+
+.build-indicator-stable {
+  background-color: #5662f6;
+}
+
+.build-indicator-ptb {
+  background-color: #5662f6;
+}
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+  /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  background-color: var(--background-color);
+  outline: rgb(129, 129, 129) solid 1px;
+  color: #fff;
+  text-align: center;
+  padding: 15px 15px;
+  text-wrap: nowrap;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tracker-selection {
+  display: flex;
+  flex-direction: column;
+  width: 100vh;
+  height: 100vh;
+}
+
+.horizontal-list {
+  display: flex;
+  flex-direction: row;
+}
+
+.wip-feature {
+  background-image: url("assets/img/warning_stripe");
+  position: absolute;
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg,
+        #faa9261e,
+        #faa9261e 10px,
+        #0000001e 10px,
+        #0000001e 20px);
+  /* -webkit-text-stroke: 1px black; */
+  backdrop-filter: blur(10px);
+  text-align: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.wip-feature-close-button {
+  position: relative;
+  cursor: pointer;
+  font-size: large;
+  font-weight: bold;
+}
+
 
 * {
   color: white;

@@ -1,0 +1,1 @@
+Tracks things like strings, experiments, etc from Discord; self-explanatory
