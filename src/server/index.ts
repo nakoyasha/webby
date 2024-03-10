@@ -31,7 +31,8 @@ export const server = {
 
     renderNotFound: function (res: Response) {
         res.render("index", {
-            page: "404",
+            page: "error",
+            message: "oops..."
         })
     },
 
@@ -48,6 +49,7 @@ export const server = {
     },
 
     fetchedBuilds: null as BuildMetadata[] | null,
+    currentlyFetchingBuilds: false,
     lastBuildFetch: Date.now(),
 
     limiter: rateLimit({
@@ -110,9 +112,20 @@ export const server = {
         // currently too many requests hitting this endpoint will result in memory not being cleared properly;
         // so the server gets killed by the oom killer
         this.server.get("/trackers/discord", this.limiter, async (req, res) => {
+            if (this.currentlyFetchingBuilds == true) {
+                // throw a Service Unavailable and tell them to wait a minute.
+                res.status(503)
+                res.setHeader("Retry-After", "60")
+                res.render('index', {
+                    page: "error",
+                    message: "The server is currently busy fetching builds. Please wait !!"
+                })
+            }
+
             const timeElapsedSinceLastFetch = (Date.now() - this.lastBuildFetch) / 1000
 
             if (this.fetchedBuilds == null || timeElapsedSinceLastFetch >= 60) {
+                this.currentlyFetchingBuilds == true
                 console.log("Fetching discord builds..")
                 let rawBuilds = await database.getBuilds()
                 let builds = [] as BuildMetadata[]
@@ -129,7 +142,9 @@ export const server = {
                 })
 
                 this.fetchedBuilds = builds
+                this.currentlyFetchingBuilds == false
                 this.lastBuildFetch = Date.now()
+                console.log("Finished fetching builds")
             }
 
             res.render('index', {
