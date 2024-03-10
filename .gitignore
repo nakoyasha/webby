@@ -1,6 +1,12 @@
 node_modules
+
+# build folders
 current_build
 build
+dist
+
+# yep
+dist_that_runs
 
 # noop nop nop nop
 .env

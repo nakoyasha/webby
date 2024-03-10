@@ -4,8 +4,8 @@
   "description": ":3",
   "scripts": {
     "dev": "export NODE_ENV=development || set NODE_ENV=development && npx nodemon -w src -e tsx,ts src/index.ts",
-    "prod": "export NODE_ENV=production || set NODE_ENV=production && npx ts-node src/index.ts",
-    "build": "ts-node src/scripts/makeStaticBuild.ts",
+    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist/src",
+    "build": "echo Starting build.. && tsc --project tsconfig.json && node scripts/build.js && tsc-alias && echo Build complete!",
     "blank": "echo yep. its building alright trust me 👍"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
@@ -37,6 +37,7 @@
     "yarn": "^1.22.21"
   },
   "devDependencies": {
+    "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0"
   }
 }

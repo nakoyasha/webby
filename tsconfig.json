@@ -1,7 +1,8 @@
 {
   "ts-node": {
     "require": [
-      "tsconfig-paths/register"
+      "tsconfig-paths/register",
+      "ts-node/register/transpile-only"
     ]
   },
   "compilerOptions": {
@@ -23,7 +24,7 @@
       "node_modules/@types"
     ],
     "sourceMap": false,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "@system/*": [
         "src/system/*"
