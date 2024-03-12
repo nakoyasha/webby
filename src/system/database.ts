@@ -5,6 +5,7 @@ import Logger from "@system/logger";
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "@util/Tracker/Models/BuildData";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
+import { ExperimentsSchema } from "@util/Tracker/Models/ExperimentData";
 const logger = new Logger("System/DatabaseSystem");
 
 export const database = {
@@ -18,6 +19,19 @@ export const database = {
     async getBuilds() {
         return await BuildModel.find();
     },
+
+    // async getLastBuilds() {
+    //     const stableBuilds = BuildModel.find({ branch: "stable" })
+    //     const canaryBuilds = BuildModel.find({ branch: "canary" })
+
+    //     const latestStableBuild = stableBuilds.sort({ id: -1 }).limit(1)[0]
+    //     const latestCanaryBuild = canaryBuilds.sort({ id: -1 }).limit(1).get 
+
+    //     return {
+    //         stable: latestStableBuild,
+    //         canary: latestCanaryBuild,
+    //     }
+    // },
 
     async getBuildData(BuildNumber: string, Branch: DiscordBranch) {
         return await BuildModel.findOne({ BuildNumber: BuildNumber, Branch: Branch });
@@ -38,6 +52,7 @@ export const database = {
                 Branch: Build.Branch,
                 Experiments: Build.Experiments,
                 Strings: Build.Strings,
+                Scripts: Build.Scripts
             });
 
             await buildData.save()
