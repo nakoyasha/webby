@@ -1,21 +1,59 @@
-<p class="page-title page-title-fix-home">trackers/discord/<%=build.name%></p>
-<%- include(`../../../components/wip-feature`) %>
 <div>
+  <%- include(`../../../components/wip-feature`) %>
+  <p class="page-title page-title-fix-home">trackers/discord/<%=build.build_number%></p>
   <div class="blog-return-container">
     <a class="blog-return" href="/trackers/discord">
       &lt; Return to builds
     </a>
   </div>
 
-  <div class="blog-div">
-    <div class="make-bold-tag-fancy-pls blog-top">
-      <h1><b><%=build.title%></b></h1>
-      <div class="description-and-date">
-        <i class="blog-description"><%=build.description%></b></i>
+  <div class="center-div topbar-margin">
+    <div class="build-details menhera-outline">
+      <div class="make-bold-tag-fancy-pls blog-top">
+        <div class="build-indicators build-indicators-details">
+          <div class="tooltip build-indicator build-indicator-canary">
+            <span class="tooltiptext">This is the latest canary build</span>
+          </div>
+        </div>
+        <h1><b>Build <%=build.build_number%></b></h1>
+        <div class="description-and-date">
+          <p class="blog-description"><%=build.build_hash%> • Saved on <%=build.date%></p>
+        </div>
+        <div class="blog-separator"></div>
+        <div class="build-details-grid">
+          <div class="build-feature">
+            <div class="build-feature-top">
+              <h2>
+                <b>Strings (2005)</b>
+              </h2>
+              <button class="menhera-button" id="strings-button" onclick="toggleStrings(this.id)">Show</button>
+            </div>
 
-        <p class="blog-description">Found on <%=build.date%></p>
+            <p>No strings changes were found</p>
+            <div class="hljs build-diff" id="strings-diff">
+              <span class="diff-add">DISCORD: "Kerfus Incorporated!"</span>
+              <span class="diff-change">DISCORD_DESC_SHORT: "we hate kerfus !! 😠😠😠"</span>
+              <span class="diff-remove">DISCORD_DESC_LONG: "Kerfus haters united.."</span>
+            </div>
+          </div>
+
+          <div class="build-feature">
+            <div class="build-feature-top">
+              <h2>
+                <b>Experiments</b>
+              </h2>
+              <button class="menhera-button" id="experiments-button" onclick="toggleExperiments(this.id)">Show</button>
+            </div>
+            <p>No experiment changes were found</p>
+            <div class="hljs build-diff" id="experiments-diff">
+              <span class="diff-add"></span>
+              <span class="diff-change">DISCORD_DESC_SHORT: "we hate kerfus !! 😠😠😠"</span>
+              <span class="diff-remove">DISCORD_DESC_LONG: "Kerfus haters united.."</span>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="blog-separator"></div>
     </div>
   </div>
 </div>

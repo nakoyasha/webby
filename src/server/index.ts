@@ -8,6 +8,7 @@ import highlightjs from "highlight.js"
 import markdown from "markdown-it"
 import { rateLimit } from 'express-rate-limit'
 import { database } from "@system/database"
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch"
 
 export type PostMetadata = {
     name: string,
@@ -17,10 +18,18 @@ export type PostMetadata = {
     date: string,
 }
 
+export type FetchedBuilds = {
+    latestBuilds: {
+        canary?: BuildMetadata,
+        stable?: BuildMetadata,
+    },
+    builds: BuildMetadata[]
+}
+
 export type BuildMetadata = {
-    name: string,
-    title: string,
-    description: string,
+    build_number: string,
+    build_hash: string,
+    branch: DiscordBranch,
     date: string,
 }
 
@@ -48,7 +57,7 @@ export const server = {
         }
     },
 
-    fetchedBuilds: null as BuildMetadata[] | null,
+    fetchedBuilds: null as FetchedBuilds | null,
     currentlyFetchingBuilds: false,
     lastBuildFetch: Date.now(),
 
@@ -64,6 +73,19 @@ export const server = {
             response.set("X-Powered-By", "menhera")
             nextConsumer()
         })
+
+        if (process.env.NODE_ENV == "production") {
+            this.server.use((request, response, nextConsumer) => {
+                if (
+                    request.path.startsWith("/assets/") ||
+                    request.path.startsWith("/style/") ||
+                    request.path.startsWith("/scripts/")
+                ) {
+                    response.setHeader("Cache-Control", "public max-age=604800")
+                }
+                nextConsumer()
+            })
+        }
 
         this.server.use(express.static("src/server/data"))
         this.server.use(express.static("public"))
@@ -100,12 +122,16 @@ export const server = {
             res.render('index', {
                 page: "trackers/discord/build",
                 build: {
-                    name: "260196",
-                    title: "Build 260192",
-                    description: "kerfus build :3",
+                    build_number: "260196",
+                    build_hash: "masataka-ebina-yep",
                     date: "today",
                 }
             })
+        })
+
+        this.server.get("/api/v1/portalcord/verification", this.limiter, async (req, res) => {
+            // :3
+            res.redirect("https://youtu.be/vAvcxeXtBz0?t=11")
         })
 
         // TODO: figure out a better way to reduce memory usage
@@ -126,18 +152,27 @@ export const server = {
             const timeElapsedSinceLastFetch = (Date.now() - this.lastBuildFetch) / 1000
 
             if (this.fetchedBuilds == null || timeElapsedSinceLastFetch >= 60) {
+                let startedAt = Date.now()
                 this.currentlyFetchingBuilds = true
                 console.log("Fetching discord builds..")
                 let rawBuilds = await database.getBuilds()
-                let builds = [] as BuildMetadata[]
+                // let latestBuilds = await database.getLastBuilds()
+                let builds = {
+                    latestBuilds: {
+                        canary: undefined,
+                        stable: undefined,
+                    },
+                    builds: [],
+                } as FetchedBuilds
 
                 rawBuilds.forEach(build => {
                     if (!build.BuildNumber.startsWith("not-a-real-build")) {
-                        builds.push({
-                            name: build.BuildNumber,
-                            title: `Build ${build.BuildNumber}`,
-                            description: "kerfus build :3",
-                            date: new Date((build.Date as number)).toLocaleDateString(),
+                        console.log(`Pushing build ${build.BuildNumber}`)
+                        builds.builds.push({
+                            build_number: build.BuildNumber,
+                            build_hash: build.VersionHash,
+                            branch: build.Branch,
+                            date: new Date(build.Date).toLocaleDateString(),
                         })
                     }
                 })
@@ -145,12 +180,12 @@ export const server = {
                 this.fetchedBuilds = builds
                 this.currentlyFetchingBuilds = false
                 this.lastBuildFetch = Date.now()
-                console.log("Finished fetching builds")
+                console.log(`Finished fetching builds in ${this.lastBuildFetch - startedAt}`)
             }
 
             res.render('index', {
                 page: "trackers/discord/builds",
-                builds: this.fetchedBuilds,
+                builds: this.fetchedBuilds.builds,
             })
         })
 
@@ -212,9 +247,6 @@ export const server = {
                 })
             }
         })
-
-
-
     },
     start: function () {
         this.server.listen(80, () => {
