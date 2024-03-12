@@ -9,6 +9,8 @@ import markdown from "markdown-it"
 import { rateLimit } from 'express-rate-limit'
 import { database } from "@system/database"
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch"
+import { config, configDotenv } from "dotenv"
+
 
 export type PostMetadata = {
     name: string,
@@ -69,6 +71,7 @@ export const server = {
 
     }),
     init: function () {
+        configDotenv({})
         this.server.use((_, response, nextConsumer) => {
             response.set("X-Powered-By", "menhera")
             nextConsumer()
@@ -249,8 +252,8 @@ export const server = {
         })
     },
     start: function () {
-        this.server.listen(80, () => {
-            console.log("silly website is listening on port 80!")
+        this.server.listen(process.env.PORT, () => {
+            console.log(`silly website is listening on port ${process.env.PORT}!`)
         })
     }
 }
