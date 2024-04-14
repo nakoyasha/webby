@@ -1,23 +1,68 @@
 import mongoose, { Document } from "mongoose";
-import * as dotenv from "dotenv";
 
 import Logger from "@system/logger";
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "@util/Tracker/Models/BuildData";
-import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
-import { ExperimentsSchema } from "@util/Tracker/Models/ExperimentData";
+import { defaultPageLimit } from "src/server/constants";
+
 const logger = new Logger("System/DatabaseSystem");
 
 export const database = {
     async startMongoose() {
-        // do this AGAINH becuase it doesnt work for some reason
-        dotenv.config();
-
         await mongoose.connect(process.env.MONGO_URL as string);
     },
 
-    async getBuilds() {
-        return await BuildModel.find();
+    async getBuildCount() {
+        return await BuildModel.estimatedDocumentCount({}).exec()
+    },
+
+    // set smol to true when you don't need terabytes worth of build data !!!!!!!!
+    async getBuilds(limit: number = defaultPageLimit, smol: boolean = false): Promise<BuildData[]> {
+        const filteredFields: Record<any, any> = smol == true && {
+            _id: false,
+            scripts: false,
+            strings_diff: false,
+            experiments: false,
+
+            // legacy builds
+            Scripts: false,
+            Strings: false,
+            Experiments: false,
+
+            // why is this even here??
+            __v: false,
+        } || {
+            // nuh uh
+            __v: false,
+        }
+
+        const fetchedBuilds = await BuildModel.find().limit(limit).select(filteredFields).exec();
+        const builds: BuildData[] = []
+
+        for (const build of fetchedBuilds) {
+            builds.push(build)
+        }
+
+        return builds
+    },
+
+
+    // TODO: the tracker refactor probably broke this, fix it !!
+    async fixBrokenDates() {
+        const builds = await BuildModel.find()
+
+        for (let build of builds) {
+            console.log(`Processing ${build.build_number}`)
+            const date = build.date_found
+
+            // it's impossible for builds to be older than 2015.. sooo
+            if (date.getFullYear() < 2015) {
+                // sweet horrors beyond my comprehension..
+                build.date_found = (((build.date_found as unknown) as number) * 1000 as unknown) as Date
+            }
+
+            await build.save()
+        }
     },
 
     // async getLastBuilds() {
@@ -33,28 +78,28 @@ export const database = {
     //     }
     // },
 
-    async getBuildData(BuildNumber: string, Branch: DiscordBranch) {
-        return await BuildModel.findOne({ BuildNumber: BuildNumber, Branch: Branch });
+    async getLastBuild() {
+        const build = await BuildModel.find().sort({ id: -1 }).limit(1)
+        return build[0]
+    },
+
+    async getBuildData(BuildHash: string): Promise<BuildData | null> {
+        return await BuildModel.findOne({ build_hash: BuildHash }).exec()
+    },
+
+    async getLegacyBuildData(BuildHash: string): Promise<BuildData | null> {
+        return await BuildModel.findOne({ VersionHash: BuildHash }).exec()
     },
 
     async createBuildData(Build: BuildData) {
-        let buildDataExists = await this.getBuildData(Build.BuildNumber, Build.Branch) != undefined
+        let buildDataExists = await this.getBuildData(Build.build_hash) != undefined
 
         if (buildDataExists == true) {
-            logger.warn(`Not saving data as the build data for ${Build.BuildNumber}-${Build.VersionHash} already exists`)
+            logger.warn(`Not saving data as the build data for ${Build.build_number}-${Build.build_hash} already exists`)
             return;
         }
         try {
-            const buildData = new BuildModel({
-                BuildNumber: Build.BuildNumber,
-                VersionHash: Build.VersionHash,
-                Date: Build.Date,
-                Branch: Build.Branch,
-                Experiments: Build.Experiments,
-                Strings: Build.Strings,
-                Scripts: Build.Scripts
-            });
-
+            const buildData = new BuildModel(Build);
             await buildData.save()
         } catch (err) {
             logger.error(

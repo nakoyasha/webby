@@ -11,6 +11,10 @@ import { database } from "@system/database"
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch"
 import { config, configDotenv } from "dotenv"
 
+import { RouteType, type Plugin } from "./plugins/pluginInterface"
+import { APIPlugin } from "./plugins/api"
+import { poweredByMenheraPlugin } from "./plugins/poweredByMenhera"
+import ViewsPlugin from "./plugins/views"
 
 export type PostMetadata = {
     name: string,
@@ -29,24 +33,20 @@ export type FetchedBuilds = {
 }
 
 export type BuildMetadata = {
-    build_number: string,
+    build_number: number,
     build_hash: string,
-    branch: DiscordBranch,
-    date: string,
+    branches: DiscordBranch[],
+    date: String,
 }
 
 export const server = {
     server: express(),
-    DATA_LOCATION: join(__dirname, "data"),
     POSTS_LOCATION: join(__dirname, "data/posts"),
-
-    renderNotFound: function (res: Response) {
-        res.render("index", {
-            page: "error",
-            message: "oops..."
-        })
-    },
-
+    plugins: [
+        new ViewsPlugin(),
+        new APIPlugin(),
+        new poweredByMenheraPlugin(),
+    ] as Plugin[],
     getPostMetadata: function (file: string): PostMetadata {
         const metadata = matter.read(this.POSTS_LOCATION + `/${file}`)
 
@@ -68,14 +68,42 @@ export const server = {
         limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
         standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
         legacyHeaders: true,
-
     }),
     init: function () {
         configDotenv({})
-        this.server.use((_, response, nextConsumer) => {
-            response.set("X-Powered-By", "menhera")
-            nextConsumer()
-        })
+        // initialize plugins
+        for (const plugin of this.plugins) {
+            const routePrefix = plugin?.routePrefix ?? ""
+
+            if (plugin.routes !== undefined) {
+                for (const route of plugin.routes) {
+                    const routePath = routePrefix + route.path
+                    // the evil route type tree...
+                    switch (route.type) {
+                        case RouteType.GET:
+                            this.server.get(routePath, route.onRequest)
+                            break;
+                        case RouteType.POST:
+                            this.server.post(routePath, route.onRequest)
+                            break;
+                        case RouteType.PUT:
+                            this.server.put(routePath, route.onRequest)
+                            break;
+                        case RouteType.DELETE:
+                            this.server.delete(routePath, route.onRequest)
+                            break;
+                        case RouteType.PATCH:
+                            this.server.patch(routePath, route.onRequest)
+                            break;
+                        case RouteType.OPTIONS:
+                            this.server.options(routePath, route.onRequest)
+                            break;
+                    }
+                }
+            }
+
+            plugin.init(this.server)
+        }
 
         if (process.env.NODE_ENV == "production") {
             this.server.use((request, response, nextConsumer) => {
@@ -92,50 +120,6 @@ export const server = {
 
         this.server.use(express.static("src/server/data"))
         this.server.use(express.static("public"))
-
-        this.server.set("views", join(__dirname, "views"))
-        this.server.set("view engine", "ejs")
-
-        this.server.get("/", async (req, res) => {
-            const meData = JSON.parse(readFileSync(this.DATA_LOCATION + "/me.json", { encoding: "utf8", flag: "r" }))
-            res.render('index', {
-                page: "home", my: meData
-            })
-        })
-
-        this.server.get("/sekai-stickers", async (req, res) => {
-            res.render('index', {
-                page: "sekaiStickers"
-            })
-        })
-
-        this.server.get("/projects", async (req, res) => {
-            res.render('index', {
-                page: "projects"
-            })
-        })
-
-        this.server.get("/trackers", async (req, res) => {
-            res.render('index', {
-                page: "trackers",
-            })
-        })
-
-        this.server.get("/trackers/discord/:buildId", async (req, res) => {
-            res.render('index', {
-                page: "trackers/discord/build",
-                build: {
-                    build_number: "260196",
-                    build_hash: "masataka-ebina-yep",
-                    date: "today",
-                }
-            })
-        })
-
-        this.server.get("/api/v1/portalcord/verification", this.limiter, async (req, res) => {
-            // :3
-            res.redirect("https://youtu.be/vAvcxeXtBz0?t=11")
-        })
 
         // TODO: figure out a better way to reduce memory usage
         // currently too many requests hitting this endpoint will result in memory not being cleared properly;
@@ -157,9 +141,8 @@ export const server = {
             if (this.fetchedBuilds == null || timeElapsedSinceLastFetch >= 60) {
                 let startedAt = Date.now()
                 this.currentlyFetchingBuilds = true
-                console.log("Fetching discord builds..")
+                console.time("fetch-discord-builds")
                 let rawBuilds = await database.getBuilds()
-                // let latestBuilds = await database.getLastBuilds()
                 let builds = {
                     latestBuilds: {
                         canary: undefined,
@@ -169,13 +152,31 @@ export const server = {
                 } as FetchedBuilds
 
                 rawBuilds.forEach(build => {
-                    if (!build.BuildNumber.startsWith("not-a-real-build")) {
-                        console.log(`Pushing build ${build.BuildNumber}`)
+                    const branches = build.branches.map((branch) => {
+                        if (branch == DiscordBranch.Stable) {
+                            return "stable"
+                        }
+
+                        if (branch == DiscordBranch.PTB) {
+                            return "ptb"
+                        }
+
+                        if (branch == DiscordBranch.Canary) {
+                            return "canary"
+                        }
+
+
+                        return "unknown-build-this-should-never-be-seen-uh"
+                    })
+
+                    console.log(branches)
+
+                    if (!build.build_hash.startsWith("not-a-real-build")) {
                         builds.builds.push({
-                            build_number: build.BuildNumber,
-                            build_hash: build.VersionHash,
-                            branch: build.Branch,
-                            date: new Date(build.Date).toLocaleDateString(),
+                            build_number: build.build_number,
+                            build_hash: build.build_hash,
+                            branches: branches as any,
+                            date: build.date_found.toLocaleDateString(),
                         })
                     }
                 })
@@ -183,7 +184,7 @@ export const server = {
                 this.fetchedBuilds = builds
                 this.currentlyFetchingBuilds = false
                 this.lastBuildFetch = Date.now()
-                console.log(`Finished fetching builds in ${this.lastBuildFetch - startedAt}`)
+                console.timeEnd("fetch-discord-builds")
             }
 
             res.render('index', {
@@ -206,6 +207,8 @@ export const server = {
             })
         })
 
+
+
         this.server.get("/blog/:blogId", async (req, res) => {
             const blogId = req.params.blogId
             const md = markdown({
@@ -219,7 +222,7 @@ export const server = {
                         } catch (__) { }
                     }
 
-                    return ''; // use external default escaping
+                    return ''; // use external default escAPIPluginng
                 }
             })
 
@@ -228,27 +231,22 @@ export const server = {
                 const renderedContent = md.render(post.content)
                 post.content = renderedContent
 
-
                 res.render('index', {
                     page: "blogPost",
                     post: post,
                 })
             } catch (err) {
-                console.log(`: ${err}`)
-                this.renderNotFound(res)
+                console.error(`: ${err}`)
             }
         })
 
-        this.server.get("/*", (req, res) => {
+        this.server.use((req, res, nextConsumer) => {
+            // 404 page at the very bottom..
             res.status(404)
-
-            if (req.accepts("html")) {
-                this.renderNotFound(res)
-            } else {
-                res.send({
-                    message: "404 - page not found"
-                })
-            }
+            res.render("index", {
+                page: "error",
+                message: "oops..."
+            })
         })
     },
     start: function () {
