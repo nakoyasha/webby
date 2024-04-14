@@ -1,13 +1,14 @@
 :root {
   --accent-color: rgb(192, 120, 170);
-  --background-color: rgba(61,46,66);
-  --menubar-background: rgba(61,46,66, .7);
-  --footer-background: rgba(61,46,66, .2);
+  --background-color: rgba(61, 46, 66);
+  --menubar-background: rgba(61, 46, 66, .7);
+  --dim-background: rgba(33, 37, 41, .5);
+  --footer-background: rgba(61, 46, 66, .2);
   --button-background: rgba(46, 45, 45, 0.541);
   --button-background-hover: rgba(50, 50, 50, 0.8);
   --button-stroke: rgba(255, 255, 255, 0.05);
   --critical: rgb(129, 48, 61);
-  --build-details-background: rgb(61, 46, 66);
+  --generic-background-color: rgb(61, 46, 66);
 
   --diff-add-background: rgba(0, 155, 70, 0.5);
   --diff-change-background: rgba(0, 72, 155, 0.5);
@@ -44,14 +45,26 @@
   }
 } */
 
+* {
+  /* go away bootstrap !! */
+  /* line-height: normal !important; */
+}
+
 body {
-  background-image: url("/assets/img/background-grid.png");
-  background-color: var(--background-color);
+  /* shoo shoo away bootstrap */
+  font-size: initial !important;
+  font-family: initial !important;
+}
+
+body {
+  /* so that bootstrap doesnt try to obliterate it */
+  background-image: url("/assets/img/background-grid.png") !important;
+  background-color: var(--background-color) !important;
   background-blend-mode: overlay;
 }
 
-.make-bold-tag-fancy-pls b{
-  color: var(--accent-color);
+.make-bold-tag-fancy-pls b {
+  color: var(--accent-color) !important;
 
   /* glow too bright. eyes hurt */
   /* text-shadow: 1px 1px 4px var(--accent-color); */
@@ -72,11 +85,11 @@ body {
 .error-frame {
   display: flex;
   flex-flow: column;
-  
-  color: white;
-  font-size: 200%;
+
+  color: white !important;
+  font-size: 200% !important;
   /* font-family: "Gotham Rounded Bold"; */
-  font-weight: bold;
+  font-weight: bold !important;
   overflow: hidden;
 
   /* % and vh crop it ???? whyy */
@@ -97,25 +110,26 @@ body {
 .menhera-button {
   display: flex;
   flex-direction: row;
-  
+
   background-color: var(--button-background);
   border: 1px solid var(--button-stroke);
   padding: 8px;
   margin: 8px;
-  
+
   height: 15%;
   border-radius: 8px;
   align-items: center;
 
   /* font-family: "Gotham Rounded Regular"; */
-  font-weight: normal;
+  font-weight: normal !important;
   white-space: nowrap;
   width: fit-content;
   height: fit-content;
+  cursor: pointer;
 }
 
 .make-button-smol {
-  font-size: 60%;
+  font-size: 60% !important;
 }
 
 .menhera-button:hover {
@@ -132,12 +146,11 @@ body {
   justify-content: center;
   padding-left: 15px;
   padding-right: 15px;
-  font-size: larger
+  font-size: larger !important
 }
 
 .menuBarItem {
   /* font-family: 'Gotham Rounded Regular'; */
-  font-size: medium;
   border: none;
   outline: none;
   height: fit-content;
@@ -148,12 +161,12 @@ body {
   cursor: pointer;
   border-radius: 5px;
   pointer-events: all;
-  font-size: larger;
+  font-size: larger !important;
 }
 
 .menuBarItem:hover {
   color: var(--accent-color);
-  font-weight: bolder;
+  font-weight: bolder !important;
   text-shadow: 1px 1px 4px var(--accent-color);
 }
 
@@ -200,11 +213,11 @@ body {
   display: none;
   position: absolute;
   color: var(--accent-color);
-  font-weight: bold;
-  font-style: italic;
+  font-weight: bold !important;
+  font-style: italic !important;
   padding: 15px;
   top: 0px;
-  font-size: xx-large;
+  font-size: xx-large !important;
 }
 
 .page-title-critical {
@@ -223,7 +236,7 @@ body {
 }
 
 .blog-list-post {
-  background-color: rgba(61,46,66, 1);
+  background-color: rgba(61, 46, 66, 1);
   padding: 20px;
   width: fit-content;
   cursor: pointer;
@@ -296,7 +309,7 @@ body {
 
 .gotham-font {
   /* font-family: "Gotham Rounded Regular"; */
-  font-family: Inconsolata;
+  font-family: Inconsolata !important;
 }
 
 .blog-div {
@@ -365,7 +378,7 @@ body {
 
 .ourple-link {
   /* font-family: "Gotham Rounded Regular"; */
-  color: var(--accent-color);
+  color: var(--accent-color) !important;
   margin: 5px;
   text-decoration: none;
 }
@@ -379,7 +392,7 @@ body {
 }
 
 a {
-  color: white;
+  color: white !important;
   text-decoration: none;
 }
 
@@ -443,8 +456,11 @@ a:hover {
   background-color: #5662f6;
 }
 
+.generic-background {
+    background-color: var(--generic-background-color) !important;
+}
+
 .build-details {
-  background-color: var(--build-details-background);
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -547,10 +563,10 @@ a:hover {
   position: absolute;
   overflow: hidden;
   background: repeating-linear-gradient(45deg,
-        #faa9261e,
-        #faa9261e 10px,
-        #0000001e 10px,
-        #0000001e 20px);
+      #faa9261e,
+      #faa9261e 10px,
+      #0000001e 10px,
+      #0000001e 20px);
   /* -webkit-text-stroke: 1px black; */
   backdrop-filter: blur(10px);
   text-align: center;
@@ -562,7 +578,7 @@ a:hover {
   position: relative;
   cursor: pointer;
   font-size: large;
-  font-weight: bold;
+  font-weight: bold !important;
 }
 
 
@@ -577,3 +593,22 @@ a:hover {
   margin: 0;
 }
 
+
+.paginator-controls {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.darker-background {
+  background-color: var(--dim-background);
+}
+
+.page-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  width: 70%;
+}
