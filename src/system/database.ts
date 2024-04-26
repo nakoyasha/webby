@@ -4,12 +4,13 @@ import Logger from "@system/logger";
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "@util/Tracker/Models/BuildData";
 import { defaultPageLimit } from "src/server/constants";
+import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 
 const logger = new Logger("System/DatabaseSystem");
 
 export const database = {
     async startMongoose() {
-        await mongoose.connect(process.env.MONGO_URL as string);
+        return mongoose.connect(process.env.MONGO_URL as string);
     },
 
     async getBuildCount() {
@@ -65,22 +66,11 @@ export const database = {
         }
     },
 
-    // async getLastBuilds() {
-    //     const stableBuilds = BuildModel.find({ branch: "stable" })
-    //     const canaryBuilds = BuildModel.find({ branch: "canary" })
-
-    //     const latestStableBuild = stableBuilds.sort({ id: -1 }).limit(1)[0]
-    //     const latestCanaryBuild = canaryBuilds.sort({ id: -1 }).limit(1).get 
-
-    //     return {
-    //         stable: latestStableBuild,
-    //         canary: latestCanaryBuild,
-    //     }
-    // },
-
-    async getLastBuild() {
-        const build = await BuildModel.find().sort({ id: -1 }).limit(1)
-        return build[0]
+    async getLastBuild(branch: DiscordBranch = DiscordBranch.Stable) {
+        const build: BuildData = await BuildModel.findOne({
+            branches: [branch]
+        }).sort({ id: -1 }).exec() as BuildData
+        return build
     },
 
     async getBuildData(BuildHash: string): Promise<BuildData | null> {
@@ -91,14 +81,26 @@ export const database = {
         return await BuildModel.findOne({ VersionHash: BuildHash }).exec()
     },
 
-    async createBuildData(Build: BuildData) {
-        let buildDataExists = await this.getBuildData(Build.build_hash) != undefined
+    async createBuildData(Build: BuildData, Branch: DiscordBranch, lastBuild?: BuildData) {
+        let existingBuildData = await BuildModel.findOne({ build_hash: Build.build_hash }).exec()
 
-        if (buildDataExists == true) {
-            logger.warn(`Not saving data as the build data for ${Build.build_number}-${Build.build_hash} already exists`)
+        // if there's existing build data, and we haven't found this build on the specified branch..
+        if (existingBuildData !== null) {
+            if (!existingBuildData.branches.includes(Branch)) {
+                logger.log(`Build ${Build.build_hash} was found on a different branch!`)
+                existingBuildData.branches = [...Build.branches, Branch]
+                await existingBuildData.save()
+            } else {
+                logger.log(`Skipping build ${Build.build_hash} as it is already saved`)
+            }
             return;
         }
         try {
+            if (lastBuild != undefined) {
+                // set the last build to be diffed against later
+                Build.diff_against = lastBuild?.build_hash
+            }
+
             const buildData = new BuildModel(Build);
             await buildData.save()
         } catch (err) {
