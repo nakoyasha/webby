@@ -41,7 +41,7 @@ export type BuildMetadata = {
 
 export const server = {
     server: express(),
-    POSTS_LOCATION: join(__dirname, "data/posts"),
+    POSTS_LOCATION: join(__dirname, "../data/posts"),
     plugins: [
         new ViewsPlugin(),
         new APIPlugin(),
