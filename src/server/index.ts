@@ -1,7 +1,5 @@
-import express, { Response } from "express"
+import express from "express"
 import { join } from "path"
-
-import { readFileSync, readdirSync } from "fs"
 import matter from "gray-matter"
 import highlightjs from "highlight.js"
 
@@ -15,6 +13,8 @@ import { RouteType, type Plugin } from "./plugins/pluginInterface"
 import { APIPlugin } from "./plugins/api"
 import { poweredByMenheraPlugin } from "./plugins/poweredByMenhera"
 import ViewsPlugin from "./plugins/views"
+
+import { readdir } from "node:fs/promises"
 
 export type PostMetadata = {
     name: string,
@@ -41,7 +41,7 @@ export type BuildMetadata = {
 
 export const server = {
     server: express(),
-    POSTS_LOCATION: join(__dirname, "data/posts"),
+    POSTS_LOCATION: join(process.cwd(), "data/posts"),
     plugins: [
         new ViewsPlugin(),
         new APIPlugin(),
@@ -118,8 +118,9 @@ export const server = {
             })
         }
 
-        this.server.use(express.static("src/server/data"))
-        this.server.use(express.static("public"))
+        this.server.use(express.static(join(process.cwd(), "data")))
+        this.server.use(express.static(join(process.cwd(), "public")))
+
 
         // TODO: figure out a better way to reduce memory usage
         // currently too many requests hitting this endpoint will result in memory not being cleared properly;
@@ -195,7 +196,7 @@ export const server = {
 
         this.server.get("/blog", async (req, res) => {
             const posts = [] as PostMetadata[]
-            const markdownFiles = readdirSync(this.POSTS_LOCATION).filter((post) => post.endsWith(".md"))
+            const markdownFiles = (await readdir(this.POSTS_LOCATION)).filter((post) => post.endsWith(".md"))
 
             await markdownFiles.forEach((file) => {
                 posts.push(this.getPostMetadata(file))

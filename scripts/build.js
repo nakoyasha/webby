@@ -1,4 +1,4 @@
-const fs = require("fs")
+const fs = require("fs");
 
-fs.cpSync("src/server/data", "dist/src/server/data", { recursive: true })
-fs.cpSync("src/server/views", "dist/src/server/views", { recursive: true })
+fs.cpSync("data", "dist/src/server/data", { recursive: true });
+fs.cpSync("views", "dist/src/server/views", { recursive: true });
