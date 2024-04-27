@@ -3,10 +3,11 @@
   "version": "0.0.1b",
   "description": ":3",
   "scripts": {
-    "dev": "export NODE_ENV=development || set NODE_ENV=development && npx nodemon -w src -e tsx,ts src/index.ts",
-    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist/src",
-    "build": "echo Starting build.. && tsc --project tsconfig.json && node scripts/build.js && tsc-alias && echo Build complete!",
-    "blank": "echo yep. its building alright trust me 👍"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
   "author": "haruka",
@@ -34,8 +35,10 @@
     "pug": "^3.0.2",
     "puppeteer": "^22.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "yarn": "^1.22.21"
+    "yarn": "^1.22.21",
+    "astro": "^4.7.0",
+    "@astrojs/check": "^0.5.10",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "tsc-alias": "^1.8.8",
