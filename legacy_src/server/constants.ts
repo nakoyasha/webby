@@ -1,1 +1,0 @@
-export const defaultPageLimit = 15
