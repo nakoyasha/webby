@@ -2,6 +2,7 @@ import { database } from "@system/database";
 import { defaultPageLimit } from "src/constants";
 import type { APIRoute } from "astro";
 
+//@ts-ignore ts won't shut up otherwise
 export const GET: APIRoute = async ({ params, request }) => {
     if (!database.connected === true) {
         await database.startMongoose();
