@@ -1,0 +1,8 @@
+---
+const { text, href, smol } = Astro.props;
+const isSmol = smol ? "make-button-smol" : "";
+---
+
+<div class=`menhera-button ${isSmol}`>
+  <a href={href}>{text}</a>
+</div>

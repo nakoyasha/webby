@@ -7,11 +7,11 @@
   },
   "compilerOptions": {
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "NodeNext",
     "rootDir": "",
     "outDir": "./dist/",
     "strict": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "importHelpers": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
@@ -31,8 +31,10 @@
       ],
       "@util/*": [
         "src/util/*"
-      ],
-    }, /* Allow multiple folders to be treated as one when resolving modules. */
+      ]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
   "include": [
     "./**/*.ts"
@@ -40,6 +42,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "legacy_src",
-  ],
+    "legacy_src"
+  ]
 }

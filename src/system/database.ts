@@ -1,16 +1,20 @@
-import mongoose, { Document } from "mongoose";
+import mongoose from "mongoose";
 
 import Logger from "@system/logger";
 import { BuildData } from "@util/Tracker/Types/BuildData";
-import { BuildModel } from "@util/Tracker/Models/BuildData";
-import { defaultPageLimit } from "src/server/constants";
+import { BuildModel } from "@util/Tracker/Schemas/BuildSchema";
+import { defaultPageLimit } from "../constants";
 import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch";
 
 const logger = new Logger("System/DatabaseSystem");
 
 export const database = {
+    connected: false,
     async startMongoose() {
-        return mongoose.connect(process.env.MONGO_URL as string);
+        if (this.connected === true) { return; }
+        //@ts-ignore
+        const connection = await mongoose.connect(import.meta.env.MONGO_URL as string);
+        this.connected = true;
     },
 
     async getBuildCount() {

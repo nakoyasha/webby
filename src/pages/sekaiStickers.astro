@@ -1,0 +1,33 @@
+---
+import Layout from "../components/layout.astro";
+---
+
+<Layout title="/projects/sekaiStickers">
+  <p class="page-title page-title-fix-home">sekai-stickers</p>
+  <div class="menhera-div sekai-stickers">
+    <div class="center-div">
+      <div class="canvas-div">
+        <canvas class="stickerCanvas" id="sticker" width="296" height="256"
+        ></canvas>
+      </div>
+
+      <div class="controls-div">
+        <label>Position X</label>
+        <input id="X" min="-100" max="100" step="1" value="0" type="range" />
+        <label>Position Y</label>
+        <input id="Y" min="-100" max="100" step="1" value="0" type="range" />
+        <label>Rotation</label>
+        <input
+          id="Rotation"
+          min="-100"
+          max="100"
+          step="1"
+          value="0"
+          type="range"
+        />
+        <label>Text</label>
+        <input id="text" type="text" value="helo!" />
+      </div>
+    </div>
+  </div>
+</Layout>

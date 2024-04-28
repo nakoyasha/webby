@@ -14,11 +14,16 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@astrojs/check": "^0.5.10",
+    "@astrojs/react": "^3.3.1",
     "@mizuki-bot/tracker": "file:src/Util/Tracker",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.17.21",
     "@types/markdown-it": "^13.0.7",
     "@types/pug": "^2.0.10",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "astro": "^4.7.0",
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
@@ -34,11 +39,11 @@
     "oxc-parser": "^0.8.0",
     "pug": "^3.0.2",
     "puppeteer": "^22.4.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "ts-node": "^10.9.2",
-    "yarn": "^1.22.21",
-    "astro": "^4.7.0",
-    "@astrojs/check": "^0.5.10",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "yarn": "^1.22.21"
   },
   "devDependencies": {
     "tsc-alias": "^1.8.8",
