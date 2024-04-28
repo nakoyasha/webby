@@ -15,6 +15,7 @@
   "private": true,
   "dependencies": {
     "@astrojs/check": "^0.5.10",
+    "@astrojs/node": "^8.2.5",
     "@astrojs/react": "^3.3.1",
     "@mizuki-bot/tracker": "file:src/Util/Tracker",
     "@types/ejs": "^3.1.5",

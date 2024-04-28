@@ -8,5 +8,8 @@ dist
 # yep
 dist_that_runs
 
+#legacy
+legacy_src
+
 # noop nop nop nop
 .env

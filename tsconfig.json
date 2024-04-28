@@ -7,11 +7,11 @@
   },
   "compilerOptions": {
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "commonjs",
     "rootDir": "",
     "outDir": "./dist/",
     "strict": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
     "importHelpers": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
@@ -42,6 +42,7 @@
   "exclude": [
     "node_modules",
     "dist",
-    "legacy_src"
+    "legacy_src",
+    "scripts"
   ]
 }
