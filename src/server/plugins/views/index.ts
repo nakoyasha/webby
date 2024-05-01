@@ -4,20 +4,16 @@ import { join } from "path"
 
 export default class ViewsPlugin implements Plugin {
     name = "Views";
-    DATA_LOCATION: string = "";
-
-    constructor() {
-        this.DATA_LOCATION = join(process.cwd(), "data")
-    }
+    DATA_LOCATION: string = join(process.cwd(), "data");
+    CLIENT_LOCATION: string = join(process.cwd(), "dist/client");
 
     async init(server: Express) {
         server.set("views", join(process.cwd(), "dist/client"))
-        // server.set("view engine", "ejs")
-        server.use(staticDir("dist/client"))
+        server.use(staticDir(this.CLIENT_LOCATION))
 
-        server.use((request: Request, response: Response, nextConsumer: NextFunction) => {
-            response.sendFile("index.html")
-            nextConsumer()
+        // we have an spa silly
+        server.get("*", (_: Request, response: Response) => {
+            response.sendFile(join(this.CLIENT_LOCATION, "index.html"))
         })
 
         // server.get("/", async (req, res) => {
