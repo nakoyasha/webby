@@ -1,6 +1,6 @@
 import { database } from "@system/database"
 import { BuildData } from "@util/Tracker/Types/BuildData"
-import { defaultPageLimit } from "src/server/constants"
+import { defaultPageLimit } from "../../../../server/constants"
 import { Route, RouteType } from "../../pluginInterface"
 import makeAPIError, { APIErrorMessage } from "../makeAPIError"
 import { EXPERIMENT_NOT_FOUND, MISSING_EXPERIMENT_PARAM } from "../experiments"

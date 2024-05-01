@@ -3,7 +3,7 @@ import mongoose, { Document } from "mongoose";
 import Logger from "@system/logger";
 import { BuildData } from "@util/Tracker/Types/BuildData";
 import { BuildModel } from "@util/Tracker/Schemas/BuildSchema";
-import { defaultPageLimit } from "src/server/constants";
+import { defaultPageLimit } from "../server/constants";
 
 const logger = new Logger("System/DatabaseSystem");
 

@@ -1,4 +1,6 @@
 import esbuild from "esbuild";
+import { build } from "vite";
+import { join } from "path";
 
 /**
  * @type {esbuild.Plugin}
@@ -6,7 +8,7 @@ import esbuild from "esbuild";
 const makeAllPackagesExternalPlugin = {
   name: "make-all-packages-external",
   setup(build) {
-    const filter = /^[^./]|^\.[^./]|^\.\.[^/]/; // Must not start with "/" or "./" or "../"
+    const filter = /^[^./@]|^\.[^./]|^\.\.[^/]/; // Must not start with "/" or "./" or "../"
     build.onResolve({ filter }, (args) => ({
       path: args.path,
       external: true,
@@ -24,4 +26,15 @@ esbuild.build({
   treeShaking: true,
   platform: "node",
   logLevel: "info",
+});
+
+await build({
+  root: "src/client",
+  configFile: "src/client/vite.config.ts",
+  mode: "debug",
+  build: {
+    outDir: join(process.cwd(), "/dist/client"),
+    emptyOutDir: true,
+  },
+  publicDir: join(process.cwd(), "public"),
 });
