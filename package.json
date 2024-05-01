@@ -1,11 +1,11 @@
 {
   "name": "shiroko.me",
-  "version": "0.0.1b",
+  "version": "v0.0.5",
   "description": ":3",
   "scripts": {
     "dev": "export NODE_ENV=development || set NODE_ENV=development && npx nodemon -w src -e tsx,ts src/index.ts",
-    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist/src",
-    "build": "echo Starting build.. && tsc --project tsconfig.json && node scripts/build.js && tsc-alias && echo Build complete!"
+    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist",
+    "build": "node scripts/build.mjs"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
   "author": {

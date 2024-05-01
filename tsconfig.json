@@ -13,6 +13,8 @@
     "strict": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "allowJs": true,
+    "checkJs": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -36,10 +38,9 @@
   },
   "include": [
     "./**/*.ts"
-  ],
+ ],
   "exclude": [
     "node_modules",
     "dist",
-    "scripts"
   ],
 }
