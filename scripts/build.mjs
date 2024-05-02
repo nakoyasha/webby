@@ -1,6 +1,4 @@
 import esbuild from "esbuild";
-import { build } from "vite";
-import { join } from "path";
 
 /**
  * @type {esbuild.Plugin}
@@ -26,15 +24,4 @@ esbuild.build({
   treeShaking: true,
   platform: "node",
   logLevel: "info",
-});
-
-await build({
-  root: "src/client",
-  configFile: "src/client/vite.config.ts",
-  mode: "debug",
-  build: {
-    outDir: join(process.cwd(), "/dist/client"),
-    emptyOutDir: true,
-  },
-  publicDir: join(process.cwd(), "public"),
 });

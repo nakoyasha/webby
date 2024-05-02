@@ -3,9 +3,12 @@
   "version": "v0.0.5",
   "description": ":3",
   "scripts": {
-    "dev": "npx nodemon --watch src/server --watch src/client/src --exec \"npm run build && node dist/server\"",
-    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist",
-    "build": "node scripts/build.mjs"
+    "dev_full": "npx nodemon --watch src/server --watch src/client/src --exec \"npm run build-server && npm run build-client && node dist/server\"",
+    "dev_server": "npx nodemon --watch src/server --exec \"npm run build-server && node dist/server\"",
+    "dev_client": "vite src/client",
+    "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist/server",
+    "build-client": "node scripts/build_client.mjs",
+    "build-server": "node scripts/build.mjs"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
   "author": {
@@ -16,6 +19,7 @@
   "private": true,
   "dependencies": {
     "@mizuki-bot/tracker": "file:src/Util/Tracker",
+    "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.0",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.17.21",
@@ -23,6 +27,7 @@
     "@types/pug": "^2.0.10",
     "axios": "^1.6.7",
     "client": "file:src/client",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
     "express": "^4.18.3",
