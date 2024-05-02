@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./Pages/Home.tsx";
 import ErrorPage from "./Pages/Error.tsx";
 import TrackersPage from "./Pages/Trackers/index.tsx";
+import DiscordTrackerPage from "./Pages/Trackers/Discord/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/trackers",
     element: <TrackersPage />,
+  },
+  {
+    path: "/trackers/discord",
+    element: <DiscordTrackerPage />,
   },
   {
     path: "*",
