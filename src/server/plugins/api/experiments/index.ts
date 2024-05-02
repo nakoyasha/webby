@@ -1,7 +1,7 @@
 import { database } from "@system/database";
-import { Route, RouteType } from "../../pluginInterface";
+import { Route, RouteType } from "@plugins/pluginInterface";
 import { BUILD_NOT_FOUND, getBuild } from "../builds";
-import makeAPIError from "../makeAPIError";
+import makeAPIError from "@server/util/makeAPIError";
 
 export const EXPERIMENT_NOT_FOUND = makeAPIError("Unknown Experiment", 40000)
 export const MISSING_EXPERIMENT_PARAM = makeAPIError("Missing Experiment", 40000)

@@ -1,4 +1,4 @@
-import { type Plugin, type Route } from "../pluginInterface";
+import { type Plugin, type Route } from "@plugins/pluginInterface";
 import type { Express } from "express"
 import buildRoutes from "./builds"
 import experimentsRoute from "./experiments"

@@ -1,8 +1,8 @@
 import { database } from "@system/database"
 import { BuildData } from "@util/Tracker/Types/BuildData"
-import { defaultPageLimit } from "../../../../server/constants"
-import { Route, RouteType } from "../../pluginInterface"
-import makeAPIError, { APIErrorMessage } from "../makeAPIError"
+import { defaultPageLimit } from "@server/constants"
+import { Route, RouteType } from "@plugins/pluginInterface"
+import makeAPIError, { APIErrorMessage } from "@server/util/makeAPIError"
 import { EXPERIMENT_NOT_FOUND, MISSING_EXPERIMENT_PARAM } from "../experiments"
 
 export type Page = {
