@@ -1,4 +1,8 @@
 import { BuildData } from "@mizuki-bot/tracker/Types/BuildData";
+import DiffList from "../../../components/Discord/Diff/DiffList";
+import BuildFeature from "../../../components/Discord/BuildFeature";
+
+import { Tooltip } from "react-tooltip";
 
 export default function BuildDetails(props: {
   buildData: BuildData;
@@ -17,46 +21,39 @@ export default function BuildDetails(props: {
         <div className="build-details generic-background menhera-outline">
           <div className="make-bold-tag-fancy-pls blog-top">
             <div className="build-indicators build-indicators-details">
-              <div className="tooltip build-indicator build-indicator-canary">
-                <span className="tooltiptext">
-                  This is the latest canary build
-                </span>
+              <div
+                className="tooltip build-indicator build-indicator-canary"
+                data-tooltip-id="build-indicator-canary"
+                data-tooltip-content={"This is the latest canary build"}
+                data-tooltip-place="top"
+              >
+                <Tooltip
+                  className={"menhera-outline"}
+                  id="build-indicator-canary"
+                />
               </div>
             </div>
+
             <h1>
               <b>Build {buildData.build_number}</b>
             </h1>
             <div className="description-and-date">
               <p className="blog-description">
                 {buildData.build_hash} • Saved on{" "}
-                {buildData.date_found.toISOString()}
+                {buildData.built_on.toISOString()}
               </p>
             </div>
             <div className="blog-separator"></div>
             <div className="build-details-grid">
-              <div className="build-feature">
-                <div className="build-feature-top">
-                  <h2>
-                    <b>Strings (2005)</b>
-                  </h2>
-                  <button className="menhera-button" id="strings-button">
-                    Show
-                  </button>
-                </div>
-
-                <p>No strings changes were found</p>
-                <div className="hljs build-diff" id="strings-diff">
-                  <span className="diff-add">
-                    DISCORD: "Kerfus Incorporated!"
-                  </span>
-                  <span className="diff-change">
-                    DISCORD_DESC_SHORT: "we hate kerfus !! 😠😠😠"
-                  </span>
-                  <span className="diff-remove">
-                    DISCORD_DESC_LONG: "Kerfus haters united.."
-                  </span>
-                </div>
-              </div>
+              <BuildFeature
+                title={`Strings (${props.buildData.diffs.strings.length} changed)`}
+              >
+                {/* <p>No strings changes were found</p> */}
+                <DiffList
+                  showAsString={true}
+                  diffs={props.buildData.diffs.strings}
+                />
+              </BuildFeature>
 
               <div className="build-feature">
                 <div className="build-feature-top">
