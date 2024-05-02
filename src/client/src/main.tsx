@@ -6,6 +6,11 @@ import ErrorPage from "./Pages/Error.tsx";
 import TrackersPage from "./Pages/Trackers/index.tsx";
 import DiscordTrackerPage from "./Pages/Trackers/Discord/index.tsx";
 
+import "../style/meta.css";
+import "../style/animation.css";
+import "../style/fonts.css";
+import "../style/stickers.css";
+
 const router = createBrowserRouter([
   {
     path: "/",

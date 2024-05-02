@@ -466,10 +466,11 @@ a:hover {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  /* background-color: rgba(61,46,66, .5); */
   align-items: center;
   height: fit-content;
-  width: 50rem;
+  width: 100vh;
+  margin-left: 25px;
+  margin-right: 25px;
 }
 
 .build-details-grid {

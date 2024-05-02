@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import Layout from "../components/Layout";
 
+import blobCatCozy from "../../assets/img/emoji/blobcatcozy.webp";
+
 const aboutMe = {
   discord_user: 222069018507345921n,
   fedi_link: "https://lethallava.land/@nakoyasha",
@@ -14,7 +16,7 @@ export default function HomePage() {
       <p className="page-title page-title-fix-home">home</p>
       <div className="menhera-div flex-padding-15">
         <img
-          src="/assets/img/emoji/blobcatcozy.webp"
+          src={blobCatCozy}
           width="90"
           height="90"
           alt="Cat version of Google's blob emojis, wrapped up in a cozy blanket."
