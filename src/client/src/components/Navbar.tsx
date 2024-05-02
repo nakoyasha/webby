@@ -1,18 +1,20 @@
+import { NavLink } from "react-router-dom";
+
 export default function Navbar() {
   return (
     <div className="navbar menhera-outline">
-      <a className="navbar-button" href="/">
+      <NavLink className={"navbar-button"} to={"/"}>
         home
-      </a>
-      <a className="navbar-button" href="/blog">
-        blog
-      </a>
-      <a className="navbar-button" href="/projects">
+      </NavLink>
+      <NavLink className={"navbar-button"} to={"/projects"}>
         projects
-      </a>
-      <a className="navbar-button" href="/trackers">
+      </NavLink>
+      <NavLink className={"navbar-button"} to={"/blog"}>
+        blog
+      </NavLink>
+      <NavLink className={"navbar-button"} to={"/trackers"}>
         trackers
-      </a>
+      </NavLink>
     </div>
   );
 }

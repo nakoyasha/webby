@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import Layout from "../components/Layout";
 
 const aboutMe = {
@@ -41,18 +42,15 @@ export default function HomePage() {
 
           <div className="about-me-links gotham-font">
             links -
-            <a className="ourple-link" href="/blog">
-              {" "}
-              /blog{" "}
-            </a>
-            <a className="ourple-link" href="/projects">
-              {" "}
-              /projects{" "}
-            </a>
-            <a className="ourple-link" href="/trackers">
-              {" "}
-              /trackers{" "}
-            </a>
+            <NavLink className="ourple-link" to="/blog">
+              /blog
+            </NavLink>
+            <NavLink className="ourple-link" to="/projects">
+              /projects
+            </NavLink>
+            <NavLink className="ourple-link" to="/trackers">
+              /trackers
+            </NavLink>
             <div className="about-me-links gotham-font">
               socials -
               <a className="ourple-link" href={aboutMe.fedi_link}>

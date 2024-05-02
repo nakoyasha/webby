@@ -20,7 +20,7 @@ export default function ErrorPage(props: ErrorPageProps) {
             width={64}
             height={64}
           />
-          <p>oops..</p>
+          <p>oops.. {props.code != undefined ? props.code : ""}</p>
           <MenheraButton text="return to home" href="/" smol />
         </div>
       </div>
