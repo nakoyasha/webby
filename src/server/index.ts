@@ -43,9 +43,9 @@ export const server = {
     server: express(),
     POSTS_LOCATION: join(process.cwd(), "data/posts"),
     plugins: [
-        new ViewsPlugin(),
         new APIPlugin(),
         new poweredByMenheraPlugin(),
+        new ViewsPlugin(),
     ] as Plugin[],
     getPostMetadata: function (file: string): PostMetadata {
         const metadata = matter.read(this.POSTS_LOCATION + `/${file}`)
