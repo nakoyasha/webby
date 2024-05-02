@@ -25,6 +25,54 @@ const exampleBuildData: BuildData = {
   },
 };
 
+async function fetchBuildsWebby(page: number) {
+  const response = await fetch(`http://localhost/api/builds?page=${page}`);
+  if (!response.ok) {
+    console.error("uh oh!", response.status);
+    return;
+  }
+
+  const jsonResponse = await response.json();
+  const builds = jsonResponse.builds.map((build: BuildData) => {
+    build.built_on = new Date(build.built_on);
+    return build;
+  });
+
+  return {
+    builds: builds,
+    totalPages: jsonResponse.total_pages,
+  };
+}
+
+async function fetchBuildsNelly(page: number) {
+  const response = await fetch("https://nelly.tools/api/builds/app");
+
+  if (!response.ok) {
+    console.error("uh oh!", response.status);
+    return;
+  }
+
+  const jsonResponse = await response.json();
+  const builds = jsonResponse.data.map((build: any) => {
+    return {
+      build_number: build.build_number,
+      build_hash: build.build_hash,
+      branches: build.release_channels,
+      built_on: new Date(build.built_on),
+      counts: {
+        experiments: build.experiments_count,
+        strings: build.strings_diff_count,
+      },
+    };
+  });
+  builds.length = 15;
+
+  return {
+    builds: builds,
+    totalPages: 500,
+  };
+}
+
 export default function DiscordTrackerPage() {
   const [latestBuilds, aaa] = useState([exampleBuildData]);
   const [builds, setBuilds] = useState<BuildData[]>([]);
@@ -39,19 +87,10 @@ export default function DiscordTrackerPage() {
   useEffect(() => {
     async function fetchData() {
       setBuildsLoading(true);
-      const response = await fetch(`http://localhost/api/builds?page=${page}`);
-      if (!response.ok) {
-        console.error("uh oh!", response.status);
-        return;
-      }
+      const response = await fetchBuildsWebby(page);
 
-      const jsonResponse = await response.json();
-      const builds = jsonResponse.builds.map((build: BuildData) => {
-        build.date_found = new Date(build.date_found);
-        return build;
-      });
-      setBuilds(builds);
-      setMaxPages(jsonResponse.totalPages);
+      setBuilds(response.builds);
+      setMaxPages(response.totalPages);
       setBuildsLoading(false);
     }
     fetchData();
