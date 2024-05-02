@@ -3,7 +3,7 @@
   "version": "v0.0.5",
   "description": ":3",
   "scripts": {
-    "dev": "export NODE_ENV=development || set NODE_ENV=development && npx nodemon -w src -e tsx,ts src/index.ts",
+    "dev": "npx nodemon --watch src/server --watch src/client/src --exec \"npm run build && node dist/server\"",
     "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist",
     "build": "node scripts/build.mjs"
   },
