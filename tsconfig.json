@@ -8,7 +8,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "commonjs",
-    "rootDir": "",
+    "rootDir": "src",
     "outDir": "./dist/",
     "strict": true,
     "moduleResolution": "node",
@@ -29,7 +29,16 @@
     "baseUrl": ".",
     "paths": {
       "@system/*": [
-        "src/system/*"
+        "src/server/system/*"
+      ],
+      "@client/*": [
+        "src/client/src/*"
+      ],
+      "@server/*": [
+        "src/server/*"
+      ],
+      "@plugins/*": [
+        "src/server/plugins/*"
       ],
       "@util/*": [
         "src/util/*"
@@ -42,5 +51,6 @@
   "exclude": [
     "node_modules",
     "dist",
+    "scripts",
   ],
 }
