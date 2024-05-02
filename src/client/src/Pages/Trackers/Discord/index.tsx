@@ -4,6 +4,7 @@ import { BuildData, BuildFlags } from "@mizuki-bot/tracker/Types/BuildData";
 import { DiscordBranch } from "@mizuki-bot/tracker/Types/DiscordBranch";
 import BuildDetails from "./details";
 import Layout from "../../../components/Layout";
+import Page from "../../../components/Page";
 
 const exampleBuildData: BuildData = {
   build_hash: "hash",
@@ -109,9 +110,9 @@ export default function DiscordTrackerPage() {
     return (
       <Layout>
         <div className="center-div vertical-center-thing topbar-margin build-list-gap">
-          <div className="discord-builds-page generic-background menhera-outline">
+          <Page className="discord-builds-page">
             <BuildsList
-              title="Latest builds"
+              title="Latest buildss"
               builds={latestBuilds}
               onClick={(build: BuildData) => {
                 setSelectedBuild(build);
@@ -151,7 +152,7 @@ export default function DiscordTrackerPage() {
                 setPage(newPage);
               }}
             />
-          </div>
+          </Page>
         </div>
       </Layout>
     );

@@ -3,6 +3,10 @@ import DiffList from "../../../components/Discord/Diff/DiffList";
 import BuildFeature from "../../../components/Discord/BuildFeature";
 
 import { Tooltip } from "react-tooltip";
+import { DiscordBranch } from "@mizuki-bot/tracker/Types/DiscordBranch";
+
+import getBranchName from "@mizuki-bot/tracker/Util/GetBranchName";
+import Page from "../../../components/Page";
 
 export default function BuildDetails(props: {
   buildData: BuildData;
@@ -18,20 +22,25 @@ export default function BuildDetails(props: {
       </div>
 
       <div className="center-div topbar-margin">
-        <div className="build-details generic-background menhera-outline">
+        <Page className="build-details">
           <div className="make-bold-tag-fancy-pls blog-top">
             <div className="build-indicators build-indicators-details">
-              <div
-                className="tooltip build-indicator build-indicator-canary"
-                data-tooltip-id="build-indicator-canary"
-                data-tooltip-content={"This is the latest canary build"}
-                data-tooltip-place="top"
-              >
-                <Tooltip
-                  className={"menhera-outline"}
-                  id="build-indicator-canary"
-                />
-              </div>
+              {buildData.branches.map((branch: DiscordBranch) => {
+                const branchName = getBranchName(branch);
+                const tooltipKey = "build-indicator-" + branchName;
+                console.log(branchName);
+
+                return (
+                  <div
+                    className={"tooltip build-indicator " + tooltipKey}
+                    data-tooltip-id={tooltipKey}
+                    data-tooltip-content={`This is the latest ${branchName} build`}
+                    data-tooltip-place="top"
+                  >
+                    <Tooltip className={"menhera-outline"} id={tooltipKey} />
+                  </div>
+                );
+              })}
             </div>
 
             <h1>
@@ -77,7 +86,7 @@ export default function BuildDetails(props: {
               </div>
             </div>
           </div>
-        </div>
+        </Page>
       </div>
     </div>
   );
