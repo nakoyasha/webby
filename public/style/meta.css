@@ -499,11 +499,15 @@ a:hover {
 }
 
 .build-diff {
-  display: none;
-  /* display: flex; */
+  display: flex;
   flex-direction: column;
   text-align: left;
   width: 100% !important;
+  gap: 1vh;
+}
+
+.diff-item {
+  padding: 5px;
 }
 
 .diff-add {
@@ -516,6 +520,18 @@ a:hover {
 
 .diff-remove {
   background-color: var(--diff-remove-background);
+}
+
+.diff-add::before {
+  content: "+ "
+}
+
+.diff-change::before {
+  content: "~ "
+}
+
+.diff-remove::before {
+  content: "- "
 }
 
 .tooltip {
@@ -643,7 +659,7 @@ a:hover {
   flex-direction: column;
   justify-content: stretch;
   width: 70%;
-  height: 80vh;
+  height: 100%;
 }
 
 .builds-list-container {
@@ -652,5 +668,5 @@ a:hover {
   align-items: center;
   padding: 20px;
   gap: 20px;
-  width: 100%;
+  /* width: 100%; */
 }
