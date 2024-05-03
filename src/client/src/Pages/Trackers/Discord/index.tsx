@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BuildsList from "../../../components/Discord/BuildsList";
 import { BuildData, BuildFlags } from "@mizuki-bot/tracker/Types/BuildData";
 import { DiscordBranch } from "@mizuki-bot/tracker/Types/DiscordBranch";
-import BuildDetails from "./details";
+import BuildDetails from "./BuildDetails";
 import Layout from "../../../components/Layout";
 import Page from "../../../components/Page";
 
@@ -14,7 +14,10 @@ const exampleBuildData: BuildData = {
   schema_version: 1,
   experiments: new Map(),
   branches: [DiscordBranch.Canary],
-  strings_diff: [],
+  diffs: {
+    strings: [],
+    experiments: [],
+  },
   flags: [BuildFlags.NeedsStringRediff],
   scripts: {
     initial: [],
@@ -45,6 +48,7 @@ async function fetchBuildsWebby(page: number) {
   };
 }
 
+//@ts-ignore this is for testing only
 async function fetchBuildsNelly(page: number) {
   const response = await fetch("https://nelly.tools/api/builds/app");
 

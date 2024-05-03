@@ -2,6 +2,7 @@
   --accent-color: rgb(192, 120, 170);
   --background-color: rgba(61, 46, 66);
   --menubar-background: rgba(61, 46, 66, 1);
+  --brighter-menubar-background: rgba(71, 56, 76, 1);
   --dim-background: rgba(33, 37, 41, .5);
   --footer-background: rgba(61, 46, 66, .2);
   --button-background: rgba(46, 45, 45, 0.541);
@@ -188,28 +189,7 @@ body {
   padding-top: 95px;
 }
 
-.build-list {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, var(--build-list-grid-size));
-  justify-content: center;
-  justify-items: center;
-  align-items: center;
-  width: 100%;
-}
 
-.build-list-gap {
-  gap: 25px;
-}
-
-.build-list-build {
-  aspect-ratio: 2.3;
-  background-color: rgba(61, 46, 66, 1);
-  text-align: center;
-  padding: 20px;
-  width: 230px;
-  cursor: pointer;
-}
 
 .page-title {
   display: none;
@@ -244,9 +224,6 @@ body {
   cursor: pointer;
 }
 
-.build-list-build:hover {
-  background-color: rgb(74, 56, 80);
-}
 
 .blog-list-post:hover {
   background-color: rgb(74, 56, 80);
@@ -344,7 +321,7 @@ body {
 
 .menhera-outline {
   outline: rgba(255, 255, 255, 0.1) solid 2px;
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 
 .hljs {
@@ -415,96 +392,8 @@ a:hover {
   right: 5px;
 }
 
-.build-indicators {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 5px;
-  justify-content: flex-end;
-  bottom: 40px;
-  width: 100%;
-  left: 15px;
-}
-
-.build-indicators-details {
-  bottom: 0px !important;
-  left: 0px !important;
-  right: 15px !important;
-}
-
-.build-info {
-  position: absolute;
-  text-wrap: stable;
-  width: 20%;
-}
-
-.build-indicator {
-  aspect-ratio: 1 / 1;
-  border-radius: 100%;
-  height: 8px;
-  width: 8px;
-}
-
-.build-indicator-canary {
-  background-color: #faa926;
-}
-
-.build-indicator-stable {
-  background-color: #5662f6;
-}
-
-.build-indicator-ptb {
-  background-color: #5662f6;
-}
-
 .generic-background {
   background-color: var(--generic-background-color) !important;
-}
-
-.build-details {
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: fit-content;
-  width: 100vh;
-  margin-left: 25px;
-  margin-right: 25px;
-}
-
-.build-details-grid {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  /* grid-template-columns: repeat(auto-fit, 70%); */
-  justify-content: left;
-  align-content: left;
-  gap: 10px;
-}
-
-.build-feature {
-  /* background-color: red; */
-  display: flex;
-  height: fit-content;
-  flex-direction: column;
-  text-align: left;
-  align-items: left;
-  width: fit-content
-}
-
-.build-feature-top {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.build-diff {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  width: 100% !important;
-  gap: 1vh;
 }
 
 .diff-item {
@@ -533,35 +422,6 @@ a:hover {
 
 .diff-remove::before {
   content: "- "
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-  /* If you want dots under the hoverable text */
-}
-
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: fit-content;
-  background-color: var(--background-color);
-  outline: rgb(129, 129, 129) solid 1px;
-  color: #fff;
-  text-align: center;
-  padding: 15px 15px;
-  text-wrap: nowrap;
-  border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-  visibility: visible;
 }
 
 .tracker-selection {
@@ -623,15 +483,6 @@ a:hover {
   background-color: var(--dim-background);
 }
 
-.builds-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  gap: 20px;
-  width: 70%;
-  height: 100%;
-}
 
 .page-list-with-height-front-end-is-pain {
   display: flex;
@@ -654,20 +505,31 @@ a:hover {
   height: 20%;
 }
 
-
-.discord-builds-page {
+.page-tabs {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  width: 70%;
-  height: 100%;
+  align-content: flex-start;
+  width: 100%;
+  left: 25px;
+  /* bottom: 45px; */
 }
 
-.builds-list-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  gap: 20px;
-  /* width: 100%; */
+.page-tab {
+  background-color: var(--menubar-background);
+  padding: 10px;
+  cursor:pointer;
+}
+
+.page-tab[selected] {
+  background-color: var(--brighter-menubar-background);
+}
+
+.page-tab:hover {
+  background-color: var(--brighter-menubar-background);
+}
+
+
+.page-container {
+  width: 100vh;
+  height: 100vh;
 }

@@ -10,6 +10,7 @@ import "../style/meta.css";
 import "../style/animation.css";
 import "../style/fonts.css";
 import "../style/stickers.css";
+import "../style/trackers/discord.css";
 
 const router = createBrowserRouter([
   {

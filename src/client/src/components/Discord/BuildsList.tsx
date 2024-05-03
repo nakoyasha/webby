@@ -63,7 +63,11 @@ export default class BuildsList extends React.Component {
           <div className="build-list">
             {this.props.builds.map((build) => {
               return (
-                <BuildCard onClick={this.props.onClick} buildData={build} />
+                <BuildCard
+                  key={build.build_hash}
+                  onClick={this.props.onClick}
+                  buildData={build}
+                />
               );
             })}
           </div>

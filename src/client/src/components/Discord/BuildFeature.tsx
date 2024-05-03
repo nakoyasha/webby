@@ -1,12 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 export type BuildFeatureProps = {
   title: string;
   children: React.ReactNode;
+  hidden?: boolean;
 };
 
 export default function BuildFeature(props: BuildFeatureProps) {
-  const [visible, setVisible] = useState(true);
+  const defaultValue = props.hidden == true ? false : true;
+  const [visible, setVisible] = useState<boolean>(defaultValue);
 
   return (
     <div className="build-feature">

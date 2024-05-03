@@ -7,37 +7,46 @@ import { DiscordBranch } from "@mizuki-bot/tracker/Types/DiscordBranch";
 
 import getBranchName from "@mizuki-bot/tracker/Util/GetBranchName";
 import Page from "../../../components/Page";
+import ExperimentLabel from "../../../components/Discord/Experiments/ExperimentLabel";
 
 export default function BuildDetails(props: {
   buildData: BuildData;
   onExit: () => void;
 }) {
-  const buildData = props.buildData;
+  const { buildData, onExit } = props;
+  let experiments = Object.values(buildData.experiments);
   return (
     <div>
       <div className="blog-return-container">
-        <a className="blog-return" onClick={props.onExit}>
+        <a className="blog-return" onClick={onExit}>
           &lt; Return to builds
         </a>
       </div>
 
       <div className="center-div topbar-margin">
-        <Page className="build-details">
+        <Page
+          className="build-details"
+          tabs={["Info", "Experiments", "Scripts"]}
+        >
           <div className="make-bold-tag-fancy-pls blog-top">
             <div className="build-indicators build-indicators-details">
               {buildData.branches.map((branch: DiscordBranch) => {
                 const branchName = getBranchName(branch);
                 const tooltipKey = "build-indicator-" + branchName;
-                console.log(branchName);
 
                 return (
                   <div
                     className={"tooltip build-indicator " + tooltipKey}
+                    key={branchName}
                     data-tooltip-id={tooltipKey}
                     data-tooltip-content={`This is the latest ${branchName} build`}
                     data-tooltip-place="top"
                   >
-                    <Tooltip className={"menhera-outline"} id={tooltipKey} />
+                    <Tooltip
+                      key={branchName}
+                      className={"menhera-outline"}
+                      id={tooltipKey}
+                    />
                   </div>
                 );
               })}
@@ -55,35 +64,36 @@ export default function BuildDetails(props: {
             <div className="blog-separator"></div>
             <div className="build-details-grid">
               <BuildFeature
-                title={`Strings (${props.buildData.diffs.strings.length} changed)`}
+                title={`Strings (${buildData.diffs.strings.length} changed)`}
               >
                 {/* <p>No strings changes were found</p> */}
-                <DiffList
-                  showAsString={true}
-                  diffs={props.buildData.diffs.strings}
-                />
+                <DiffList showAsString={true} diffs={buildData.diffs.strings} />
               </BuildFeature>
 
-              <div className="build-feature">
-                <div className="build-feature-top">
-                  <h2>
-                    <b>Experiments</b>
-                  </h2>
-                  <button className="menhera-button" id="experiments-button">
-                    Show
-                  </button>
-                </div>
-                <p>No experiment changes were found</p>
-                <div className="hljs build-diff" id="experiments-diff">
-                  <span className="diff-add"></span>
-                  <span className="diff-change">
-                    DISCORD_DESC_SHORT: "we hate kerfus !! 😠😠😠"
-                  </span>
-                  <span className="diff-remove">
-                    DISCORD_DESC_LONG: "Kerfus haters united.."
-                  </span>
-                </div>
-              </div>
+              <BuildFeature
+                title={`Experiments (${buildData.diffs.experiments.length} changed)`}
+                hidden={true}
+              >
+                {experiments.map((experiment) => {
+                  return (
+                    <ExperimentLabel
+                      key={experiment.hash}
+                      experiment={experiment}
+                    />
+                  );
+                })}
+                {/* <ExperimentLabel
+                    experiment={{
+                      hash: 1111,
+                      hash_key: "2024-02_the_huh_experiment",
+                      buckets: [],
+                      description: ["huh"],
+                      title: "huh",
+                      type: "user",
+                      name: "The Huh Experiment",
+                    }}
+                  /> */}
+              </BuildFeature>
             </div>
           </div>
         </Page>
