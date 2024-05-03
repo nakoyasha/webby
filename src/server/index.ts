@@ -1,7 +1,4 @@
 import express from "express"
-import { join } from "path"
-
-import { DiscordBranch } from "@util/Tracker/Types/DiscordBranch"
 import { configDotenv } from "dotenv"
 
 import { RouteType, type Plugin } from "@plugins/pluginInterface"
