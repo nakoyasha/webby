@@ -1,4 +1,8 @@
 {
+  "files": [],
+  "references": [
+    {"path": "src/shared/Tracker"},
+  ],
   "ts-node": {
     "require": [
       "tsconfig-paths/register",
@@ -8,7 +12,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "commonjs",
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "./dist/",
     "strict": true,
     "moduleResolution": "node",
@@ -28,8 +32,8 @@
     "sourceMap": false,
     "baseUrl": ".",
     "paths": {
-      "@system/*": [
-        "src/server/system/*"
+      "@shared/*": [
+        "src/shared/*"
       ],
       "@client/*": [
         "src/client/src/*"
@@ -51,6 +55,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "scripts",
+    // "scripts",
   ],
 }

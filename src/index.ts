@@ -1,8 +1,8 @@
-import { database } from "@system/database";
+import { DatabaseSystem } from "@server/DatabaseSystem";
 import { server } from "./server";
 import { configDotenv } from "dotenv";
 configDotenv()
 
-database.startMongoose()
+DatabaseSystem.startMongoose()
 server.init()
 server.start()

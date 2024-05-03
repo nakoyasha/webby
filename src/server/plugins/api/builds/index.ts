@@ -1,5 +1,5 @@
-import { database } from "@system/database"
-import { BuildData } from "@util/Tracker/Types/BuildData"
+import { DatabaseSystem } from "@server/DatabaseSystem"
+import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData"
 import { defaultPageLimit } from "@server/constants"
 import { Route, RouteType } from "@plugins/pluginInterface"
 import makeAPIError, { APIErrorMessage } from "@server/util/makeAPIError"
@@ -15,14 +15,14 @@ export const BUILD_NOT_FOUND = makeAPIError("Build not found", 80088)
 export const MISSING_BUILD_PARAM = makeAPIError("Missing Build", 40000)
 
 export async function getBuilds(pageNumber: number = 1, limit: number = defaultPageLimit): Promise<Page | APIErrorMessage> {
-    const totalBuilds = await database.getBuildCount()
+    const totalBuilds = await DatabaseSystem.getBuildCount()
     const totalPages = Math.ceil(totalBuilds / limit)
 
     if (pageNumber > totalPages) {
         return makeAPIError("Exceeded the page limit, did you forget to add a totalPages check?", 40004)
     }
 
-    const builds = await database.getBuilds(0, true)
+    const builds = await DatabaseSystem.getBuilds(0, true)
     const startIndex = (pageNumber - 1) * limit
     const endIndex = pageNumber * limit
 
@@ -36,7 +36,7 @@ export async function getBuilds(pageNumber: number = 1, limit: number = defaultP
 }
 
 export async function getBuild(buildHash: string) {
-    const build = await database.getBuildData(buildHash)
+    const build = await DatabaseSystem.getBuildData(buildHash)
     return build;
 }
 

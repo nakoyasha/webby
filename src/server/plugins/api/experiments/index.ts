@@ -1,4 +1,4 @@
-import { database } from "@system/database";
+import { DatabaseSystem } from "@server/DatabaseSystem";
 import { Route, RouteType } from "@plugins/pluginInterface";
 import { BUILD_NOT_FOUND, getBuild } from "../builds";
 import makeAPIError from "@server/util/makeAPIError";
@@ -19,7 +19,7 @@ const routes: Route[] = [
                 return;
             }
 
-            const build = await database.getLastBuild()
+            const build = await DatabaseSystem.getLastBuild()
 
             if (build === null) {
                 res.status(404)

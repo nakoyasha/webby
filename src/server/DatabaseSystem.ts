@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-import Logger from "@system/logger";
-import { BuildData } from "@util/Tracker/Types/BuildData";
-import { BuildModel } from "@util/Tracker/Schemas/BuildSchema";
-import { defaultPageLimit } from "../constants";
+import Logger from "@shared/logger";
+import { BuildData } from "@mizuki-bot/tracker/Types/BuildData";
+import { BuildModel } from "@mizuki-bot/tracker/Schemas/BuildSchema";
+import { defaultPageLimit } from "./constants";
 
 const logger = new Logger("System/DatabaseSystem");
 
-export const database = {
+export const DatabaseSystem = {
     async startMongoose() {
         await mongoose.connect(process.env.MONGO_URL as string);
     },
@@ -22,7 +22,7 @@ export const database = {
             _id: false,
             scripts: false,
             strings_diff: false,
-            experiments: false,
+            // experiments: false,
 
             // legacy builds
             Scripts: false,
@@ -79,8 +79,8 @@ export const database = {
     // },
 
     async getLastBuild() {
-        const build = await BuildModel.find().sort({ id: -1 }).limit(1)
-        return build[0]
+        const build = await BuildModel.findOne().sort({ built_on: -1 }).exec()
+        return build as BuildData;
     },
 
     async getBuildData(BuildHash: string): Promise<BuildData | null> {
