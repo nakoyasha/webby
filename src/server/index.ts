@@ -8,10 +8,14 @@ import ViewsPlugin from "@plugins/routes"
 
 import StaticPlugin from "@plugins/static"
 import CORSPlugin from "@plugins/cors"
+import { AntiBotPlugin } from "./plugins/antiBot"
+import ConfigurationPlugin from "./plugins/configuration"
 
 export const server = {
     server: express(),
     plugins: [
+        new ConfigurationPlugin(),
+        new AntiBotPlugin(),
         new StaticPlugin(),
         new CORSPlugin(),
         new APIPlugin(),
