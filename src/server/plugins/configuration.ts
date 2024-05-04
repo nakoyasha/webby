@@ -1,9 +1,10 @@
 import { Application } from "express";
 import type { Plugin } from "./pluginInterface";
 import Logger from "@shared/logger";
-import { configFileLocation, envFileLocation } from "@server/constants";
-import { ConfigFile, WebbyConfiguration } from "@server/types/configuration";
-
+import { configFileLocation } from "@server/constants";
+import { WebbyConfiguration } from "@server/types/configuration";
+import { join } from "path"
+import { readFile } from "node:fs/promises"
 
 export default class ConfigurationPlugin implements Plugin {
     public readonly name = "Configuration";
@@ -15,10 +16,28 @@ export default class ConfigurationPlugin implements Plugin {
         blocked_user_agents: []
     }
 
-    private readonly logger = new Logger("Plugins/Configuration")
+    private readonly logger = new Logger("Middleware/Configuration")
 
     public async reloadSettings() {
         await this.loadSettings()
+    }
+
+    // loads the bad_user_agents.txt file, then inserts them into the blocked_user_agents list
+    private async loadBadUserAgentList() {
+        try {
+            const file = await readFile(join(process.cwd(), "bad_user_agents.txt"), { encoding: "utf8" })
+            const lines = file
+                // windows stinky; removes CRLF line endings
+                .replace(/\r/g, "")
+                // removes whatever the double slashes are
+                .replace(/\\/g, "")
+                .split("\n")
+            console.log(lines)
+            ConfigurationPlugin.configuration.blocked_user_agents = [...lines, ...ConfigurationPlugin.configuration.blocked_user_agents]
+            this.logger.log("Loaded bad_user_agents.txt")
+        } catch (err) {
+            this.logger.error(`Failed to load bad_user_agents.txt: ${err}`)
+        }
     }
 
     private async loadSettings() {
@@ -48,5 +67,6 @@ export default class ConfigurationPlugin implements Plugin {
 
     public async init(server: Application) {
         await this.loadSettings()
+        await this.loadBadUserAgentList()
     }
 }
