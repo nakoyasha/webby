@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import HomePage from "./Pages/Home.tsx";
-import ErrorPage from "./Pages/Error.tsx";
-import TrackersPage from "./Pages/Trackers/index.tsx";
-import DiscordTrackerPage from "./Pages/Trackers/Discord/index.tsx";
+import HomePage from "./pages/Home.tsx";
+import ErrorPage from "./pages/Error.tsx";
+import TrackersPage from "./pages/Trackers/index.tsx";
+import DiscordTrackerPage from "./pages/Trackers/Discord/index.tsx";
 
 import "../style/meta.css";
 import "../style/animation.css";
