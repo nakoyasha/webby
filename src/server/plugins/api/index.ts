@@ -4,12 +4,12 @@ import buildRoutes from "./builds"
 import experimentsRoute from "./experiments"
 
 export class APIPlugin implements Plugin {
-    name = "API";
-    routePrefix = "/api";
-    routes: Route[] = [
+    public readonly name = "API";
+    public readonly routePrefix = "/api";
+    public readonly routes: Route[] = [
         ...buildRoutes,
         ...experimentsRoute
     ]
-    async init(server: Express) {
+    public async init(server: Express) {
     }
 }
