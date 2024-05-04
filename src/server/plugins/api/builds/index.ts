@@ -97,28 +97,32 @@ const routes: Route[] = [
             const experimentId = req.params.experimentId
 
             if (buildId === null) {
-                res.status(404)
-                res.send(MISSING_BUILD_PARAM)
+                res
+                    .status(404)
+                    .send(MISSING_BUILD_PARAM)
                 return;
             }
 
             if (experimentId === null) {
-                res.status(404)
-                res.send(MISSING_EXPERIMENT_PARAM)
+                res
+                    .status(404)
+                    .send(MISSING_EXPERIMENT_PARAM)
                 return;
             }
 
             const build = await getBuild(buildId)
 
             if (build === null) {
-                res.status(404)
-                res.send(BUILD_NOT_FOUND)
+                res
+                    .status(404)
+                    .send(BUILD_NOT_FOUND)
             } else {
                 const experiment = build.experiments.get(experimentId)
 
                 if (experiment === undefined) {
-                    res.status(404)
-                    res.send(EXPERIMENT_NOT_FOUND)
+                    res
+                        .status(404)
+                        .send(EXPERIMENT_NOT_FOUND)
                     return;
                 }
 

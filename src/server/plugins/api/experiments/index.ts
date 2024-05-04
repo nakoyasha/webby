@@ -22,14 +22,16 @@ const routes: Route[] = [
             const build = await DatabaseSystem.getLastBuild()
 
             if (build === null) {
-                res.status(404)
-                res.send(BUILD_NOT_FOUND)
+                res
+                    .status(404)
+                    .send(BUILD_NOT_FOUND)
             } else {
                 const experiment = build.experiments.get(experimentId)
 
                 if (experiment === null) {
-                    res.status(404)
-                    res.send(EXPERIMENT_NOT_FOUND)
+                    res
+                        .status(404)
+                        .send(EXPERIMENT_NOT_FOUND)
                     return;
                 } else {
                     res.json(experiment)
