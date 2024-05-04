@@ -4,12 +4,26 @@ import { join } from "path"
 import StaticPlugin from "@plugins/static";
 
 export default class RoutesPLugin implements Plugin {
-    name = "Routes";
-    async init(server: Express) {
+    public readonly name = "Routes";
+    private readonly AVAILABLE_ROUTES = [
+        "/",
+        "/trackers/*",
+        "/blog/*",
+        "/projects",
+        "/aaaammdiinnn/*",
+        "/assets/*",
+    ]
 
+    public async init(server: Express) {
         // we have an spa silly
-        server.get("*", (_: Request, response: Response) => {
+        server.get(this.AVAILABLE_ROUTES, (_: Request, response: Response) => {
             response.sendFile(join(StaticPlugin.CLIENT_LOCATION, "index.html"))
+        })
+
+        server.all("*", (_, response: Response) => {
+            response
+                .status(404)
+                .sendFile(join(StaticPlugin.CLIENT_LOCATION, "index.html"))
         })
     }
 }
