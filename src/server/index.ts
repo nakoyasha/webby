@@ -10,16 +10,20 @@ import StaticPlugin from "@plugins/static"
 import CORSPlugin from "@plugins/cors"
 import { AntiBotPlugin } from "./plugins/antiBot"
 import ConfigurationPlugin from "./plugins/configuration"
+import { AdminPlugin } from "./plugins/admin"
+import CloudflarePlugin from "./plugins/cloudflare"
 
 export const server = {
     server: express(),
     plugins: [
         new ConfigurationPlugin(),
+        new CloudflarePlugin(),
         new AntiBotPlugin(),
         new StaticPlugin(),
         new CORSPlugin(),
         new APIPlugin(),
         new poweredByMenheraPlugin(),
+        new AdminPlugin(),
         new ViewsPlugin(),
     ] as Plugin[],
     init: function () {
@@ -31,25 +35,26 @@ export const server = {
             if (plugin.routes !== undefined) {
                 for (const route of plugin.routes) {
                     const routePath = routePrefix + route.path
+                    const middleware = (plugin?.middleware as Array<any>) ?? []
                     // the evil route type tree...
                     switch (route.type) {
                         case RouteType.GET:
-                            this.server.get(routePath, route.onRequest)
+                            this.server.get(routePath, [...middleware, route.onRequest])
                             break;
                         case RouteType.POST:
-                            this.server.post(routePath, route.onRequest)
+                            this.server.post(routePath, [...middleware, route.onRequest])
                             break;
                         case RouteType.PUT:
-                            this.server.put(routePath, route.onRequest)
+                            this.server.put(routePath, [...middleware, route.onRequest])
                             break;
                         case RouteType.DELETE:
-                            this.server.delete(routePath, route.onRequest)
+                            this.server.delete(routePath, [...middleware, route.onRequest])
                             break;
                         case RouteType.PATCH:
-                            this.server.patch(routePath, route.onRequest)
+                            this.server.patch(routePath, [...middleware, route.onRequest])
                             break;
                         case RouteType.OPTIONS:
-                            this.server.options(routePath, route.onRequest)
+                            this.server.options(routePath, [...middleware, route.onRequest])
                             break;
                     }
                 }

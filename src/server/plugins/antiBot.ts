@@ -41,7 +41,6 @@ export class AntiBotPlugin implements Plugin {
         "telescope",
         ".git",
         ".env",
-        "admin",
         "boaform",
         "pmd",
         "manager",

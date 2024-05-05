@@ -19,5 +19,6 @@ export interface Plugin {
     name: string,
     routePrefix?: string,
     routes?: Route[],
+    middleware?: Array<any>,
     init: (server: Express) => Promise<void>
 }
