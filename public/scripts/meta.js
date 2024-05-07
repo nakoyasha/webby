@@ -25,7 +25,3 @@ function toggleStrings(buttonId) {
 function toggleExperiments(buttonId) {
   toggleDiv("experiments-diff", buttonId);
 }
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-});
