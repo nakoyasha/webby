@@ -8,14 +8,13 @@ export type WebbyConfiguration = {
     blocked_user_agents: string[],
 }
 
-export type TaskManifest = {
+export type TaskConfig = {
     enabled: boolean,
     interval: string,
+    settings: Record<string, any>
 }
-
-export type TaskConfiguration = Record<any, TaskManifest & any>
 
 export type ConfigFile = {
     webby: WebbyConfiguration,
-    tasks: TaskConfiguration
+    tasks: Record<any, TaskConfig & any>
 }
