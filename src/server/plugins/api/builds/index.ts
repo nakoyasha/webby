@@ -16,7 +16,7 @@ export const MISSING_BUILD_PARAM = makeAPIError("Missing Build", 40000)
 
 export async function getBuilds(pageNumber: number = 1, limit: number = defaultPageLimit): Promise<Page | APIErrorMessage> {
     const totalBuilds = await DatabaseSystem.getBuildCount()
-    const totalPages = Math.ceil(totalBuilds / limit)
+    const totalPages = totalBuilds > 0 ? Math.ceil(totalBuilds / limit) : 1
 
     if (pageNumber > totalPages) {
         return makeAPIError("Exceeded the page limit, did you forget to add a totalPages check?", 40004)
