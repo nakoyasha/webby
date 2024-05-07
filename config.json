@@ -6,11 +6,12 @@
     "blocked_headers": [],
     "blocked_user_agents": []
   },
+  "fetchUrl": "/app",
   "tasks": {
     "scrapeBuild": {
       "enabled": true,
       "interval": "60m",
-      "webhookUrl": "https://canary.discord.com/api/webhooks/1233206908089925712/wUQ3M1r6Ag75QSrjZD1bQwYKUTSqbnxyd5MPE9fFxk9l5HouHGokUo_KYhjXypAlzMrS"
+      "webhookUrl": "webhook-link"
     }
   }
 }
