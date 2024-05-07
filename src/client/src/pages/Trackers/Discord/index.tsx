@@ -5,6 +5,7 @@ import { DiscordBranch } from "@mizuki-bot/Tracker/Types/DiscordBranch";
 import BuildDetails from "./BuildDetails";
 import Layout from "../../../components/Layout";
 import Page from "../../../components/Page";
+import { getBuilds } from "../../../util/api";
 
 const exampleBuildData: BuildData = {
   build_hash: "hash",
@@ -28,25 +29,6 @@ const exampleBuildData: BuildData = {
     strings: 100,
   },
 };
-
-async function fetchBuildsWebby(page: number) {
-  const response = await fetch(`http://localhost/api/builds?page=${page}`);
-  if (!response.ok) {
-    console.error("uh oh!", response.status);
-    return;
-  }
-
-  const jsonResponse = await response.json();
-  const builds = jsonResponse.builds.map((build: BuildData) => {
-    build.built_on = new Date(build.built_on);
-    return build;
-  });
-
-  return {
-    builds: builds,
-    totalPages: jsonResponse.total_pages,
-  };
-}
 
 //@ts-ignore this is for testing only
 async function fetchBuildsNelly(page: number) {
@@ -92,7 +74,12 @@ export default function DiscordTrackerPage() {
   useEffect(() => {
     async function fetchData() {
       setBuildsLoading(true);
-      const response = await fetchBuildsWebby(page);
+      const response = await getBuilds(page);
+
+      if (response == undefined) {
+        console.error("Failed to fetch the builds for some reason?");
+        return;
+      }
 
       setBuilds(response.builds);
       setMaxPages(response.totalPages);
