@@ -1,6 +1,6 @@
 import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 
-export const BASE_URL = document.baseURI
+export const BASE_URL = document.location.origin
 
 export default function makeExperimentsURL(buildHash: string) {
     return new URL(`api/build/${buildHash}/experiments`, BASE_URL);
