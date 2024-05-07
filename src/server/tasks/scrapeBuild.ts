@@ -48,7 +48,7 @@ async function postBuild(
             `🔗 [\`here's the neller\`](https://nelly.tools/builds/${newBuild.build_hash})\n` +
             `🔗 [\`here's the webber\`](https://shiroko.me/trackers/discord/${newBuild.build_hash})`,
         // discord blurple
-        color: "#5865f2"
+        // color: "#5865f2"
     };
 
     const response = await fetch(webhookUrl, {
