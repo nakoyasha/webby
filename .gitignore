@@ -14,3 +14,6 @@ dist_that_runs
 
 # jetbrains ew
 .idea
+
+# noop
+config.json

@@ -1,0 +1,21 @@
+{
+  "webby": {
+    "allow_public_access": true,
+    "allow_api_access": true,
+
+    "blocked_headers": [],
+    "blocked_user_agents": []
+  },
+  "fetchUrl": "/app",
+  "tasks": {
+    "scrapeBuild": {
+      "enabled": true,
+      "interval": "60m",
+      "settings": {
+        "webhookUrl": "webhook-link",
+        "skipSavedCheck": true,
+        "branches": ["https://canary.discord.com"]
+      }
+    }
+  }
+}
