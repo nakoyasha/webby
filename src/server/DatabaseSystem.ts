@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 import Logger from "@shared/logger";
-import { BuildData } from "@mizuki-bot/tracker/Types/BuildData";
-import { BuildModel } from "@mizuki-bot/tracker/Schemas/BuildSchema";
+import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
+import { BuildModel } from "@mizuki-bot/Tracker/Schemas/BuildSchema";
 import { defaultPageLimit } from "./constants";
 
 const logger = new Logger("System/DatabaseSystem");

@@ -1,4 +1,4 @@
-import { BuildData } from "@mizuki-bot/tracker/Types/BuildData";
+import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 
 export const BASE_URL = "http://localhost";
 

@@ -1,4 +1,4 @@
-import { Diff, DiffType } from "@mizuki-bot/tracker/Types/Diff";
+import { Diff, DiffType } from "@mizuki-bot/Tracker/Types/Diff";
 
 export type DiffItemProps = {
   diff: Diff;

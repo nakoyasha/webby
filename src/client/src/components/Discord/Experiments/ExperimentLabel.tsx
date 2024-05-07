@@ -1,4 +1,4 @@
-import { Experiment } from "@mizuki-bot/tracker/Types/Experiments";
+import { Experiment } from "@mizuki-bot/Tracker/Types/Experiments";
 
 export type ExperimentLabelProps = {
   experiment: Experiment;

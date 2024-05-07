@@ -1,5 +1,5 @@
 import React from "react";
-import { BuildData } from "@mizuki-bot/tracker/Types/BuildData";
+import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 import BuildCard from "./BuildCard";
 import ActivityIndicator from "../ActivityIndicator";
 
