@@ -80,7 +80,14 @@ export const DatabaseSystem = {
 
     async getLastBuild() {
         const build = await BuildModel.findOne().sort({ built_on: -1 }).exec()
-        return build as BuildData;
+
+        // turns out it doesn't return undefined, but returns null instead!
+        // to prevent things from breaking, we return undefined here instead
+        if (build === null) {
+            return undefined;
+        }
+
+        return build;
     },
 
     async getBuildData(BuildHash: string): Promise<BuildData | null> {
