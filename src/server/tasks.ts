@@ -1,13 +1,16 @@
 import Logger from "@shared/logger";
-import Task from "./types/task";
+import Task, { TaskManifest } from "./classes/task";
 
 export default class TaskSystem {
     public running: boolean = false;
     public locked: boolean = false;
     private readonly tasks: Task[] = [];
     private readonly logger = new Logger("Server/TaskSystem")
-    constructor(tasks: Task[]) {
-        this.tasks = tasks;
+
+    constructor(tasks: TaskManifest[]) {
+        for (const manifest of tasks) {
+            this.tasks.push(new Task(manifest))
+        }
     }
 
     private getInterval(intervalString: string) {
@@ -40,26 +43,41 @@ export default class TaskSystem {
             const interval = this.getInterval(task.interval)
             const isLocked = this.locked
 
-            async function startRoutine(firstRun?: boolean) {
+            async function startTimer() {
+                setTimeout(startRoutine, interval)
+            }
+
+            async function startRoutine() {
                 // restart the timer for now, since we're locked 
                 if (isLocked == true) {
-                    setTimeout(startRoutine, interval)
+                    startTimer()
                     return;
                 }
 
-                if (firstRun != true) {
-                    try {
-                        logger.log(`Task ${task.name} is starting`)
-                        await task.run()
-                        logger.log(`Task ${task.name} has finished!`)
-                    } catch (err) {
-                        logger.error(`Routine ${task.name} has encountered an error: ${err}`)
-                    }
+                // task is disabled, so why run it?
+                if (task.enabled == false) {
+                    startTimer()
+                    return
+                }
+
+                // why would we wanna run it again..
+                if (task.running == true) {
+                    startTimer()
+                    return
+                }
+
+                try {
+                    logger.log(`Task ${task.name} is starting`)
+                    task.lastRun = new Date()
+                    await task.run()
+                    logger.log(`Task ${task.name} has finished!`)
+                } catch (err) {
+                    logger.error(`Routine ${task.name} has encountered an error: ${err}`)
                 }
                 setTimeout(startRoutine, interval)
             }
 
-            startRoutine(true)
+            startRoutine()
         }
     }
 }

@@ -7,10 +7,8 @@ import { compileBuildData } from "@mizuki-bot/Tracker/Util/CompileBuildData";
 import config from "../../../config.json";
 import getBranchName from "@mizuki-bot/Tracker/Util/GetBranchName";
 
-import Task from "../types/task"
-import { BuildModel } from "@shared/Tracker/Schemas/BuildSchema";
-const logger = new Logger("Routines/SaveBuild");
-
+import { TaskManifest } from "../classes/task"
+const logger = new Logger("Tasks/ScrapeBuild");
 
 async function saveBuild(branch: DiscordBranch, lastBuild?: BuildData) {
     try {
@@ -18,9 +16,8 @@ async function saveBuild(branch: DiscordBranch, lastBuild?: BuildData) {
         const build = (await compileBuildData(branch, undefined, lastBuild)) as BuildData;
 
         logger.log(`Saving build ${build.build_number}`);
-        const model = new BuildModel(build)
         try {
-            await model.save()
+            const model = DatabaseSystem.createBuildData(build);
         } catch (err) {
             logger.log(`Build ${build.build_number} has failed to save because ${err}`);
         } finally {
@@ -51,7 +48,7 @@ async function postBuild(
             `🔗 [\`here's the neller\`](https://nelly.tools/builds/${newBuild.build_hash})\n` +
             `🔗 [\`here's the webber\`](https://shiroko.me/trackers/discord/${newBuild.build_hash})`,
         // discord blurple
-        // color: #5865f2
+        color: "#5865f2"
     };
 
     const response = await fetch(webhookUrl, {
@@ -80,7 +77,7 @@ async function getAndSaveBuild(branch: DiscordBranch, skipCheck?: boolean) {
     const response = await fetch(DiscordBranch.Canary + "/app")
     const currentHash = response.headers.get("X-Build-Id") as string
 
-    if (skipCheck != true) {
+    if (!skipCheck) {
         logger.log("Checking if we already saved the current build..")
 
         if (!response.ok) {
@@ -92,6 +89,7 @@ async function getAndSaveBuild(branch: DiscordBranch, skipCheck?: boolean) {
 
         if (isSaved == true) {
             // we don't need to save it again silly
+            logger.log(`Skipping scrape!!`)
             return;
         }
     }
@@ -103,18 +101,23 @@ async function getAndSaveBuild(branch: DiscordBranch, skipCheck?: boolean) {
 
     if (lastBuild !== undefined && newBuild !== undefined) {
         if (lastBuild.build_hash !== newBuild.build_hash) {
-            await postBuild(newBuild, config.tasks.scrapeBuild.webhookUrl);
+            await postBuild(newBuild, config.tasks.scrapeBuild.settings.webhookUrl);
         }
     }
 }
 
-export default class ScrapeBuild implements Task {
+export default class ScrapeBuild implements TaskManifest {
     name = "Scrape and save the current Discord builds";
     interval = config.tasks.scrapeBuild.interval;
     enabled: boolean = config.tasks.scrapeBuild.enabled;
-    async run(branches: DiscordBranch[] = [DiscordBranch.Canary], skipCheck?: boolean) {
+    async run() {
+        const branches = config.tasks.scrapeBuild.settings.branches as DiscordBranch[]
+        const skipCheck = config.tasks.scrapeBuild.settings.skipSavedCheck
+
         try {
+            //@ts-ignore ts got drunk, somehow it thinks branch is a string, when it's a DiscordBranch..
             await Promise.allSettled(branches.map((branch) => getAndSaveBuild(branch, skipCheck)))
+            // await branches.map((branch) => getAndSaveBuild(branch, skipCheck))
         } catch (err) {
             logger.error(`scrapeBuild failed: ${err}`);
         }

@@ -11,7 +11,11 @@
     "scrapeBuild": {
       "enabled": true,
       "interval": "60m",
-      "webhookUrl": "webhook-link"
+      "settings": {
+        "webhookUrl": "webhook-link",
+        "skipSavedCheck": true,
+        "branches": ["https://canary.discord.com"]
+      }
     }
   }
 }
