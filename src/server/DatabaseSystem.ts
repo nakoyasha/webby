@@ -18,7 +18,7 @@ export const DatabaseSystem = {
 
     // set smol to true when you don't need terabytes worth of build data !!!!!!!!
     async getBuilds(limit: number = defaultPageLimit, smol: boolean = false): Promise<BuildData[]> {
-        const filteredFields: Record<any, any> = smol == true && {
+        const filteredFields: Record<any, any> = smol && {
             _id: false,
             scripts: false,
             strings_diff: false,
