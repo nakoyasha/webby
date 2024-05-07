@@ -11,3 +11,6 @@ dist_that_runs
 
 # noop nop nop nop
 .env
+
+# jetbrains ew
+.idea
