@@ -1,6 +1,8 @@
 import Layout from "../components/Layout";
 import MenheraButton from "../components/MenheraButton";
 
+import menheraLoading from "../../assets/img/menhera_loading.gif";
+
 export type ErrorPageProps = {
   code?: number;
 };
@@ -15,7 +17,7 @@ export default function ErrorPage(props: ErrorPageProps) {
       <div className="menhera-div">
         <div className="error-frame menhera-div">
           <img
-            src="/assets/img/menhera_loading.gif"
+            src={menheraLoading}
             alt="Confused Menhera-chan, with a spinning loading circle on top of her head."
             width={64}
             height={64}
