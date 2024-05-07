@@ -1,15 +1,51 @@
-import mongoose from "mongoose";
+import { connect as connectToDatabase, Document } from "mongoose";
 
 import Logger from "@shared/logger";
 import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 import { BuildModel } from "@mizuki-bot/Tracker/Schemas/BuildSchema";
 import { defaultPageLimit } from "./constants";
+import { DiscordBranch } from "@shared/Tracker/Types/DiscordBranch";
 
 const logger = new Logger("System/DatabaseSystem");
+export type ReturnedBuildData = Document<unknown, {}, BuildData> & BuildData
+
+const FALLBACK_URL = "mongodb://localhost:27017/webbyStaging"
+const SMOL_FILTER = {
+    _id: false,
+    scripts: false,
+    strings_diff: false,
+    // experiments: false,
+
+    // legacy builds
+    Scripts: false,
+    Strings: false,
+    Experiments: false,
+
+    // why is this even here??
+    __v: false,
+}
+
+const REGULAR_FILTER = {
+    __v: false,
+}
 
 export const DatabaseSystem = {
+    connected: false,
     async startMongoose() {
-        await mongoose.connect(process.env.MONGO_URL as string);
+        if (this.connected) {
+            return;
+        }
+
+        const mongoURL = process.env.MONGO_URL || FALLBACK_URL
+
+        connectToDatabase(mongoURL as string)
+            .then(() => {
+                this.connected = true;
+                logger.log("Connected to the database successfully!");
+            })
+            .catch((err: Error) => {
+                logger.error(`Failed to connect to the database: ${err.message}\nCause:${err.cause}`);
+            })
     },
 
     async getBuildCount() {
@@ -18,25 +54,9 @@ export const DatabaseSystem = {
 
     // set smol to true when you don't need terabytes worth of build data !!!!!!!!
     async getBuilds(limit: number = defaultPageLimit, smol: boolean = false): Promise<BuildData[]> {
-        const filteredFields: Record<any, any> = smol && {
-            _id: false,
-            scripts: false,
-            strings_diff: false,
-            // experiments: false,
+        const filter: Record<any, any> = smol && SMOL_FILTER || REGULAR_FILTER
 
-            // legacy builds
-            Scripts: false,
-            Strings: false,
-            Experiments: false,
-
-            // why is this even here??
-            __v: false,
-        } || {
-            // nuh uh
-            __v: false,
-        }
-
-        const fetchedBuilds = await BuildModel.find().limit(limit).select(filteredFields).exec();
+        const fetchedBuilds = await BuildModel.find().limit(limit).select(filter).exec();
         const builds: BuildData[] = []
 
         for (const build of fetchedBuilds) {
@@ -52,7 +72,7 @@ export const DatabaseSystem = {
         const builds = await BuildModel.find()
 
         for (let build of builds) {
-            console.log(`Processing ${build.build_number}`)
+            logger.log(`Processing ${build.build_number}`)
             const date = build.date_found
 
             // it's impossible for builds to be older than 2015.. sooo
@@ -65,21 +85,21 @@ export const DatabaseSystem = {
         }
     },
 
-    // async getLastBuilds() {
-    //     const stableBuilds = BuildModel.find({ branch: "stable" })
-    //     const canaryBuilds = BuildModel.find({ branch: "canary" })
+    async getLatestBuilds() {
+        const stableBuild = await this.getLastBuild(DiscordBranch.Stable)
+        const canaryBuild = await this.getLastBuild(DiscordBranch.Canary)
+        const ptbBuild = await this.getLastBuild(DiscordBranch.PTB)
 
-    //     const latestStableBuild = stableBuilds.sort({ id: -1 }).limit(1)[0]
-    //     const latestCanaryBuild = canaryBuilds.sort({ id: -1 }).limit(1).get 
+        return {
+            stable: stableBuild,
+            canary: canaryBuild,
+            ptb: ptbBuild
+        }
+    },
 
-    //     return {
-    //         stable: latestStableBuild,
-    //         canary: latestCanaryBuild,
-    //     }
-    // },
-
-    async getLastBuild() {
-        const build = await BuildModel.findOne().sort({ built_on: -1 }).exec()
+    async getLastBuild(branch?: DiscordBranch) {
+        const filter = branch ? { branches: [branch] } : {}
+        const build = await BuildModel.findOne(filter).sort({ built_on: -1 }).exec()
 
         // turns out it doesn't return undefined, but returns null instead!
         // to prevent things from breaking, we return undefined here instead
@@ -90,7 +110,7 @@ export const DatabaseSystem = {
         return build;
     },
 
-    async getBuildData(BuildHash: string): Promise<BuildData | null> {
+    async getBuildData(BuildHash: string): Promise<ReturnedBuildData | null> {
         return await BuildModel.findOne({ build_hash: BuildHash }).exec()
     },
 
@@ -98,21 +118,36 @@ export const DatabaseSystem = {
         return await BuildModel.findOne({ VersionHash: BuildHash }).exec()
     },
 
-    async createBuildData(Build: BuildData) {
-        let buildDataExists = await this.getBuildData(Build.build_hash) != undefined
+    async createBuildData(build: BuildData) {
+        const existingBuildData = await this.getBuildData(build.build_hash)
+        const existingBuildDataExists = existingBuildData != undefined
 
-        if (buildDataExists == true) {
-            logger.warn(`Not saving data as the build data for ${Build.build_number}-${Build.build_hash} already exists`)
+        const newBranch = build.branches[0]
+        const isNewBranch = build.branches.find(branch => branch == newBranch) !== undefined
+
+        if (existingBuildDataExists && isNewBranch) {
+            logger.log(`Build ${build.build_number} has been spotted on a new branch: ${newBranch}`)
+            await BuildModel.updateOne({ build_hash: build.build_hash }, {
+                $set: {
+                    branches: [
+                        ...existingBuildData.branches,
+                        ...build.branches
+                    ]
+                }
+            })
             return;
         }
-        try {
-            const buildData = new BuildModel(Build);
-            await buildData.save()
-        } catch (err) {
-            logger.error(
-                `The Thing has Mongoose'd: Failed to create BuildData: ${err}`,
-            );
-            return;
-        }
+
+        const buildData = new BuildModel(build);
+        await new Promise((resolve, reject) => {
+            buildData.save()
+                .then(resolve)
+                .catch((err) => {
+                    logger.error(
+                        `BuildData save for ${build.build_hash} has failed: ${err.message}\nCause: ${err.cause}`,
+                    );
+                    reject()
+                })
+        })
     },
 };
