@@ -11,6 +11,7 @@ import "../style/animation.css";
 import "../style/fonts.css";
 import "../style/stickers.css";
 import "../style/trackers/discord.css";
+import AdminPage from "./pages/Admin/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/trackers/discord",
     element: <DiscordTrackerPage />,
+  },
+  {
+    path: "/aaaammdiinnn",
+    element: <AdminPage />,
   },
   {
     path: "*",

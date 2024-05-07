@@ -5,8 +5,8 @@
   --brighter-menubar-background: rgba(71, 56, 76, 1);
   --dim-background: rgba(33, 37, 41, .5);
   --footer-background: rgba(61, 46, 66, .2);
-  --button-background: rgba(46, 45, 45, 0.541);
-  --button-background-hover: rgba(50, 50, 50, 0.8);
+  --button-background: rgba(44, 34, 48, 0.3);
+  --button-background-hover: rgba(44, 34, 48, 0);
   --button-stroke: rgba(255, 255, 255, 0.05);
   --critical: rgb(129, 48, 61);
   --generic-background-color: rgb(61, 46, 66);
@@ -129,12 +129,50 @@ body {
   cursor: pointer;
 }
 
+button, input[type="button"], input[type="submit"] {
+  background-color: var(--button-background);
+  border: 1px solid var(--button-stroke);
+  padding: 8px;
+  margin: 8px;
+  
+  height: 15%;
+  border-radius: 8px;
+  align-items: center;
+  
+    /* font-family: "Gotham Rounded Regular"; */
+  font-weight: normal !important;
+  white-space: nowrap;
+  width: fit-content;
+  height: fit-content;
+  cursor: pointer;
+}
+
 .make-button-smol {
   font-size: 60% !important;
 }
 
-.menhera-button:hover {
+ .menhera-button:hover {
   background-color: var(--button-background-hover)
+}
+
+button:hover, 
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background-color: var(--button-background-hover)
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+form[aria-vertical="true"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .navbar {

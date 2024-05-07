@@ -4,10 +4,13 @@
     width: 30%;
 }
 
+
 input {
     accent-color: var(--accent-color);
-    background-color: var(--menubar-background);
+    background-color: var(--brighter-menubar-background);
     border: none;
+    margin: 15px;
+    border-radius: 5px
 }
 
 input[type="text"] {

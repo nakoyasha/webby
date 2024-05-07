@@ -12,15 +12,15 @@ export default function Page(props: {
   }
 
   return (
-    <div className="page-container">
-      <div className="page-tabs">
+    // <div className="page-container">
+    /*{ <div className="page-tabs">
         {tabs.map((tab) => {
           return <a className="page-tab">{tab}</a>;
         })}
-      </div>
-      <div className={"generic-background " + props.className}>
-        {props.children}
-      </div>
+      </div> } */
+    <div className={"generic-background " + props.className}>
+      {props.children}
     </div>
+    // </div>
   );
 }
