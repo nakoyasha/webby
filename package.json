@@ -3,12 +3,13 @@
   "version": "v0.0.5",
   "description": ":3",
   "scripts": {
-    "dev_full": "npx nodemon --watch src/server --watch src/client/src --exec \"npm run build-server && npm run build-client && node dist/server\"",
+    "dev-full": "npx nodemon --watch src/server --watch src/client/src --exec \"npm run build-server && npm run build-client && node dist/server\"",
     "dev-server": "npx nodemon --watch src --exec \"npm run build-server && node dist/server\"",
     "dev-client": "vite src/client",
     "prod": "export NODE_ENV=production || set NODE_ENV=production && node dist/server",
     "build-client": "node scripts/build_client.mjs",
-    "build-server": "node scripts/build.mjs"
+    "build-server": "node scripts/build.mjs",
+    "build": "npm run build-client && npm run build-server"
   },
   "repository": "https://github.com/nakoyasha/shiroko.me",
   "author": {
