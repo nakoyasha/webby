@@ -1,11 +1,11 @@
-import { BuildData } from "@mizuki-bot/tracker/Types/BuildData";
+import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 import DiffList from "../../../components/Discord/Diff/DiffList";
 import BuildFeature from "../../../components/Discord/BuildFeature";
 
 import { Tooltip } from "react-tooltip";
-import { DiscordBranch } from "@mizuki-bot/tracker/Types/DiscordBranch";
+import { DiscordBranch } from "@mizuki-bot/Tracker/Types/DiscordBranch";
 
-import getBranchName from "@mizuki-bot/tracker/Util/GetBranchName";
+import getBranchName from "@mizuki-bot/Tracker/Util/GetBranchName";
 import Page from "../../../components/Page";
 import ExperimentLabel from "../../../components/Discord/Experiments/ExperimentLabel";
 

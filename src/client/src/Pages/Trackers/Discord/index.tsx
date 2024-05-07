@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import BuildsList from "../../../components/Discord/BuildsList";
-import { BuildData, BuildFlags } from "@mizuki-bot/tracker/Types/BuildData";
-import { DiscordBranch } from "@mizuki-bot/tracker/Types/DiscordBranch";
+import { BuildData, BuildFlags } from "@mizuki-bot/Tracker/Types/BuildData";
+import { DiscordBranch } from "@mizuki-bot/Tracker/Types/DiscordBranch";
 import BuildDetails from "./BuildDetails";
 import Layout from "../../../components/Layout";
 import Page from "../../../components/Page";
