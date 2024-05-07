@@ -1,13 +1,13 @@
 import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 
-export const BASE_URL = "http://localhost";
+export const BASE_URL = document.baseURI
 
 export default function makeExperimentsURL(buildHash: string) {
     return new URL(`api/build/${buildHash}/experiments`, BASE_URL);
 }
 
 export async function getBuilds(page: number) {
-    const response = await fetch(`http://localhost/api/builds?page=${page}`);
+    const response = await fetch(`${BASE_URL}/api/builds?page=${page}`);
     if (!response.ok) {
         console.error("uh oh!", response.status);
         return;
