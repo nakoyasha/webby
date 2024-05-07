@@ -7,31 +7,10 @@ import { compileBuildData } from "@mizuki-bot/Tracker/Util/CompileBuildData";
 import config from "../../../config.json";
 import getBranchName from "@mizuki-bot/Tracker/Util/GetBranchName";
 
-import Task from "./task"
+import Task from "../types/task"
 import { BuildModel } from "@shared/Tracker/Schemas/BuildSchema";
 const logger = new Logger("Routines/SaveBuild");
 
-function getInterval() {
-    const configInterval = config.tasks.scrapeBuild.interval;
-    const interval = configInterval.replaceAll("s", "").replaceAll("m", "").replaceAll("h", "");
-
-    const isSeconds = configInterval.endsWith("s");
-    const isMinutes = configInterval.endsWith("m");
-    const isHours = configInterval.endsWith("h");
-
-    if (isSeconds == true) {
-        return parseInt(interval) * 1000;
-    } else if (isMinutes == true) {
-        return (parseInt(interval) * 1000) * 60;
-    } else if (isHours == true) {
-        return (parseInt(interval) * 1000) * 60 * 60 * 24;
-    } else {
-        logger.error(`Invalid interval: ${configInterval}`)
-        return 60000;
-    }
-}
-
-const taskInterval = getInterval()
 
 async function saveBuild(branch: DiscordBranch, lastBuild?: BuildData) {
     try {
@@ -131,11 +110,11 @@ async function getAndSaveBuild(branch: DiscordBranch, skipCheck?: boolean) {
 
 export default class ScrapeBuild implements Task {
     name = "Scrape and save the current Discord builds";
-    interval = taskInterval;
+    interval = config.tasks.scrapeBuild.interval;
     enabled: boolean = config.tasks.scrapeBuild.enabled;
     async run(branches: DiscordBranch[] = [DiscordBranch.Canary], skipCheck?: boolean) {
         try {
-            Promise.all(branches.map((branch) => getAndSaveBuild(branch, skipCheck)))
+            await Promise.allSettled(branches.map((branch) => getAndSaveBuild(branch, skipCheck)))
         } catch (err) {
             logger.error(`scrapeBuild failed: ${err}`);
         }

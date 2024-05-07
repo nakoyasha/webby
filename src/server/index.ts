@@ -13,8 +13,14 @@ import ConfigurationPlugin from "./plugins/configuration"
 import { AdminPlugin } from "./plugins/admin"
 import CloudflarePlugin from "./plugins/cloudflare"
 
+import { Worker } from "node:worker_threads"
+import Logger from "@shared/logger"
+
+import { join } from "node:path"
+
 export const server = {
     server: express(),
+    logger: new Logger("webby"),
     plugins: [
         new ConfigurationPlugin(),
         new CloudflarePlugin(),
@@ -75,11 +81,28 @@ export const server = {
                 nextConsumer()
             })
         }
+
+        const taskThread = new Worker(join(__dirname, "threads/taskSystem.js"))
+
+        taskThread.on("message", (msg) => {
+            this.logger.log(`Message from TaskSystem: ${msg}`)
+        })
+
+        taskThread.on("online", () => {
+            this.logger.log("TaskSystem has started")
+        })
+
+        taskThread.on("error", (err) => {
+            this.logger.error(`TaskSystem thread has encountered an exception: ${err}`)
+        })
+
+        taskThread.on("exit", (code) => {
+            this.logger.error(`TaskSystem thread has exited with code ${code}`)
+        })
     },
     start: function () {
         this.server.listen(process.env.PORT, () => {
-            console.log(`Webby listening on port ${process.env.PORT}!`)
+            this.logger.log(`Webby listening on port ${process.env.PORT}!`)
         })
     }
 }
-

@@ -1,5 +1,5 @@
 export default interface Task {
     name: string
-    interval: number,
+    interval: string,
     run: () => Promise<void>
 }

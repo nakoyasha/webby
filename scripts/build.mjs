@@ -25,3 +25,10 @@ esbuild.build({
   platform: "node",
   logLevel: "info",
 });
+
+esbuild.build({
+  entryPoints: ["src/server/threads/taskSystem.ts"],
+  bundle: true,
+  plugins: [makeAllPackagesExternalPlugin],
+  outfile: "dist/server/threads/taskSystem.js",
+});
