@@ -1,19 +1,21 @@
 import { RouteType, type Plugin, type Route } from "@plugins/pluginInterface";
-import type { Express } from "express"
+import type { Express, Request, Response, NextFunction } from "express"
 import { restrictToAdmin } from "../access";
 
+import apiRoutes from "./api"
 
 export class AdminPlugin implements Plugin {
     public readonly name = "Admin";
-    public readonly routePrefix = "/admin";
+    public readonly routePrefix = "/aaaammdiinnn";
     public readonly routes: Route[] = [
+        ...apiRoutes,
         {
-            path: "/hello-world",
+            path: "/*",
             type: RouteType.GET,
-            async onRequest(req, res) {
-                res.send("Hello World!")
+            async onRequest(request: Request, response: Response, nextFunction: NextFunction) {
+                nextFunction()
             }
-        }
+        },
     ];
     middleware = [restrictToAdmin];
     public async init(server: Express) {

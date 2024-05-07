@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express"
+import type { Express, NextFunction, Request, Response } from "express"
 
 export enum RouteType {
     GET,
@@ -12,7 +12,7 @@ export enum RouteType {
 export type Route = {
     path: string,
     type: RouteType,
-    onRequest: (req: Request, res: Response) => void
+    onRequest: (req: Request, res: Response, nextFunction: NextFunction) => void
 }
 
 export interface Plugin {
