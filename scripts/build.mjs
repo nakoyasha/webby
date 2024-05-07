@@ -31,4 +31,5 @@ esbuild.build({
   bundle: true,
   plugins: [makeAllPackagesExternalPlugin],
   outfile: "dist/server/threads/taskSystem.js",
+  platform: "node",
 });

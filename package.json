@@ -19,7 +19,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@mizuki-bot/tracker": "file:src/shared/Tracker",
+    "@mizuki-bot/Tracker": "file:src/shared/Tracker",
     "axios": "^1.6.7",
     "client": "file:src/client",
     "cors": "^2.8.5",
