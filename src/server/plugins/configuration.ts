@@ -32,7 +32,6 @@ export default class ConfigurationPlugin implements Plugin {
                 // removes whatever the double slashes are
                 .replace(/\\/g, "")
                 .split("\n")
-            console.log(lines)
             ConfigurationPlugin.configuration.blocked_user_agents = [...lines, ...ConfigurationPlugin.configuration.blocked_user_agents]
             this.logger.log("Loaded bad_user_agents.txt")
         } catch (err) {
