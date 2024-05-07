@@ -11,7 +11,6 @@ import CORSPlugin from "@plugins/cors"
 import { AntiBotPlugin } from "./plugins/antiBot"
 import ConfigurationPlugin from "./plugins/configuration"
 import { AdminPlugin } from "./plugins/admin"
-import CloudflarePlugin from "./plugins/cloudflare"
 
 import { Worker } from "node:worker_threads"
 import Logger from "@shared/logger"
@@ -23,7 +22,6 @@ export const server = {
     logger: new Logger("webby"),
     plugins: [
         new ConfigurationPlugin(),
-        new CloudflarePlugin(),
         new AntiBotPlugin(),
         new StaticPlugin(),
         new CORSPlugin(),
