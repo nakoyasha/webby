@@ -33,8 +33,13 @@ export default function DiffItem(props: DiffItemProps) {
     return (
       <>
         <span className="diff-item"># Updated</span>
-        <span className="diff-remove diff-item">{props.diff.oldValue}</span>
-        <span className="diff-add diff-item">{props.diff.newValue}</span>
+        <span className="diff-remove diff-item">
+          {props.diff.key}: {props.diff.oldValue}
+        </span>
+        <span className="diff-add diff-item">
+          {props.diff.key}: {props.diff.oldValue}
+          {props.diff.newValue}
+        </span>
       </>
     );
   } else if (isRemove) {
