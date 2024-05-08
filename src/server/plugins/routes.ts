@@ -7,6 +7,7 @@ export default class RoutesPLugin implements Plugin {
     public readonly name = "Routes";
     private readonly AVAILABLE_ROUTES = [
         "/",
+        "/trackers",
         "/trackers/*",
         "/blog/*",
         "/projects",
