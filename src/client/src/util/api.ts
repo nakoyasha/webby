@@ -30,6 +30,22 @@ export async function getBuilds(page: number) {
     };
 }
 
+
+export async function getLatestBuilds(): Promise<BuildData[] | undefined> {
+    const response = await fetch(`${BASE_URL}/api/builds/latest`);
+    if (!response.ok) {
+        console.error("Error fetching latest builds:", response.status);
+        return undefined;
+    }
+    const jsonData = await response.json();
+    const builds = jsonData.builds.map((build: BuildData) => {
+        build.built_on = new Date(build.built_on);
+        return build;
+    })
+
+    return builds;
+}
+
 export async function getExperiments(buildHash: string) {
     const response = await fetch(makeExperimentsURL(buildHash));
     if (!response.ok) {

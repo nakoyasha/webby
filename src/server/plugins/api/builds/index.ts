@@ -90,6 +90,20 @@ const routes: Route[] = [
         },
     },
     {
+        path: "/builds/latest",
+        type: RouteType.GET,
+        async onRequest(req, res, nextFunction) {
+            const latestBuilds = await DatabaseSystem.getLatestBuilds()
+            res.json({
+                builds: Object.values(latestBuilds).filter((build) => {
+                    if (build != undefined) {
+                        return build
+                    }
+                }),
+            })
+        },
+    },
+    {
         path: "/build/:buildId/experiment/:experimentId",
         type: RouteType.GET,
         async onRequest(req, res) {

@@ -86,20 +86,31 @@ export const DatabaseSystem = {
     },
 
     async getLatestBuilds() {
-        const stableBuild = await this.getLastBuild(DiscordBranch.Stable)
-        const canaryBuild = await this.getLastBuild(DiscordBranch.Canary)
-        const ptbBuild = await this.getLastBuild(DiscordBranch.PTB)
+        const stableBuild = await BuildModel.findOne({
+            latest: [DiscordBranch.Stable]
+        }).exec()
+        const canaryBuild = await BuildModel.findOne({
+            latest: [DiscordBranch.Canary]
+        }).exec()
+        const ptbBuild = await BuildModel.findOne({
+            latest: [DiscordBranch.PTB]
+        }).exec()
 
         return {
-            stable: stableBuild,
-            canary: canaryBuild,
-            ptb: ptbBuild
+            stable: stableBuild ?? undefined,
+            canary: canaryBuild ?? undefined,
+            ptb: ptbBuild ?? undefined
         }
     },
 
-    async getLastBuild(branch?: DiscordBranch) {
+    async getLastBuild(
+        branch?: DiscordBranch,
+        fieldFilter: Record<any, any> = {},
+        sort: Record<any, any> = { built_on: -1 }
+    ) {
         const filter = branch ? { branches: [branch] } : {}
-        const build = await BuildModel.findOne(filter).sort({ built_on: -1 }).exec()
+        const fieldsFilter = fieldFilter ? fieldFilter : {}
+        const build = await BuildModel.findOne(filter).sort(sort).select(fieldsFilter).exec()
 
         // turns out it doesn't return undefined, but returns null instead!
         // to prevent things from breaking, we return undefined here instead
@@ -110,8 +121,8 @@ export const DatabaseSystem = {
         return build;
     },
 
-    async getBuildData(BuildHash: string): Promise<ReturnedBuildData | null> {
-        return await BuildModel.findOne({ build_hash: BuildHash }).exec()
+    async getBuildData(BuildHash: string, filter: Record<any, any> = {}): Promise<ReturnedBuildData | null> {
+        return await BuildModel.findOne({ build_hash: BuildHash }).select(filter).exec()
     },
 
     async getLegacyBuildData(BuildHash: string): Promise<BuildData | null> {
@@ -122,17 +133,35 @@ export const DatabaseSystem = {
         const existingBuildData = await this.getBuildData(build.build_hash)
         const existingBuildDataExists = existingBuildData != undefined
 
-        const newBranch = build.branches[0]
-        const isNewBranch = existingBuildData.branches.find(branch => branch == newBranch) !== undefined
+        if (existingBuildDataExists) {
+            const newBranch = build.branches[0]
+            const isNewBranch = existingBuildData.branches.find(branch => branch == newBranch) !== undefined
 
-        if (existingBuildDataExists && isNewBranch) {
+            if (!isNewBranch) {
+                return;
+            }
+
             logger.log(`Build ${build.build_number} has been spotted on a new branch: ${newBranch}`)
+            const newBranches = [
+                ...existingBuildData.branches,
+                ...build.branches
+            ]
+
+            await BuildModel.updateMany({
+                latest: {
+                    $exists: true,
+                    $not: { $size: 0 }
+                }
+            }, {
+                $pull: {
+                    latest: newBranches
+                }
+            })
+
             await BuildModel.updateOne({ build_hash: build.build_hash }, {
                 $set: {
-                    branches: [
-                        ...existingBuildData.branches,
-                        ...build.branches
-                    ]
+                    latest: newBranches,
+                    branches: newBranches,
                 }
             })
             return;
