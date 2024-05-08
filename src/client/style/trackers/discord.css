@@ -1,3 +1,9 @@
+:root {
+    --canary-color: #faa926;
+    --ptb-color: #1d9bf0;
+    --stable-color: #1d9bf0;
+}
+
 .build-list {
     display: grid;
     gap: 10px;
@@ -68,15 +74,23 @@
 }
 
 .build-indicator-canary {
-    background-color: #faa926;
+    background-color: var(--canary-color);
 }
 
-.build-indicator-stable {
-    background-color: #5662f6;
+.build-indicator-stable, build-indicator-ptb {
+    background-color: var(--stable-color);
 }
 
-.build-indicator-ptb {
-    background-color: #5662f6;
+.canary-outline {
+    outline: var(--canary-color) solid 2px;
+}
+
+.stable-outline, .ptb-online {
+    outline: var(--stable-color) solid 2px;
+}
+
+.build-card {
+    border-radius: 6px;
 }
 
 .build-details {

@@ -1,34 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BuildsList from "../../../components/Discord/BuildsList";
-import { BuildData, BuildFlags } from "@mizuki-bot/Tracker/Types/BuildData";
-import { DiscordBranch } from "@mizuki-bot/Tracker/Types/DiscordBranch";
+import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 import BuildDetails from "./BuildDetails";
 import Layout from "../../../components/Layout";
 import Page from "../../../components/Page";
-import { getBuilds } from "../../../util/api";
-
-const exampleBuildData: BuildData = {
-  build_hash: "hash",
-  build_number: 125192,
-  date_found: new Date(Date.now()),
-  built_on: new Date(Date.now()),
-  schema_version: 1,
-  experiments: new Map(),
-  branches: [DiscordBranch.Canary],
-  diffs: {
-    strings: [],
-    experiments: [],
-  },
-  flags: [BuildFlags.NeedsStringRediff],
-  scripts: {
-    initial: [],
-    lazy: [],
-  },
-  counts: {
-    experiments: 100,
-    strings: 100,
-  },
-};
+import { getBuilds, getLatestBuilds } from "../../../util/api";
 
 //@ts-ignore this is for testing only
 async function fetchBuildsNelly(page: number) {
@@ -61,10 +37,10 @@ async function fetchBuildsNelly(page: number) {
 }
 
 export default function DiscordTrackerPage() {
-  const [latestBuilds, aaa] = useState([exampleBuildData]);
+  const [latestBuilds, setLatestBuilds] = useState<BuildData[]>([]);
   const [builds, setBuilds] = useState<BuildData[]>([]);
   const [buildsLoading, setBuildsLoading] = useState(true);
-  const [latestBuildsLoading, aaaaa] = useState(false);
+  const [latestBuildsLoading, setLatestBuildsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [maxPages, setMaxPages] = useState<string | number>("fetching..");
 
@@ -88,6 +64,17 @@ export default function DiscordTrackerPage() {
     fetchData();
   }, [page]);
 
+  useEffect(() => {
+    getLatestBuilds().then((response) => {
+      if (response == undefined) {
+        return;
+      }
+
+      setLatestBuilds(response);
+      setLatestBuildsLoading(false);
+    });
+  }, []);
+
   if (isViewingDetails) {
     return (
       <Layout>
@@ -103,7 +90,7 @@ export default function DiscordTrackerPage() {
         <div className="center-div vertical-center-thing topbar-margin build-list-gap">
           <Page className="discord-builds-page">
             <BuildsList
-              title="Latest buildss"
+              title="Latest builds"
               builds={latestBuilds}
               onClick={(build: BuildData) => {
                 setSelectedBuild(build);

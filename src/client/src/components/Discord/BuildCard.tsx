@@ -1,5 +1,6 @@
 import React from "react";
 import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
+import getBranchName from "@mizuki-bot/Tracker/Util/GetBranchName";
 
 function timeDifference(current: number, previous: number) {
   const msPerMinute = 60 * 1000;
@@ -54,7 +55,8 @@ export default class BuildCard extends React.Component {
     this.tick();
     this.interval = setInterval(() => this.tick(), 1000);
   }
-  //@ts-expect-error yeah
+  //@ts-ignore
+  // eslint-disable-next-line no-undef
   interval: NodeJS.Timeout;
   componentWillUnmount(): void {
     clearInterval(this.interval);
@@ -63,9 +65,14 @@ export default class BuildCard extends React.Component {
     const { buildData } = this.props;
 
     return (
-      <div className="build-card" key={buildData.build_hash}>
+      <div
+        className={
+          "build-card " + getBranchName(buildData.branches[0]) + "-outline"
+        }
+        key={buildData.build_number}
+      >
         <a
-          className="make-bold-tag-fancy-pls blog-top build-list-build menhera-outline"
+          className="make-bold-tag-fancy-pls blog-top build-list-build "
           onClick={() => {
             this.props.onClick(this.props.buildData);
           }}
@@ -74,7 +81,7 @@ export default class BuildCard extends React.Component {
             <h3>
               <b>Build {buildData.build_number}</b>
             </h3>
-            <p className="blog-description">Saved {this.state.timeElapsed}</p>
+            <p className="blog-description">Built {this.state.timeElapsed}</p>
           </div>
         </a>
       </div>
