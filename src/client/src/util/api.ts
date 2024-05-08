@@ -26,7 +26,7 @@ export async function getBuilds(page: number) {
 
     return {
         builds: builds,
-        totalPages: jsonResponse.total_pages,
+        totalPages: jsonResponse.totalPages,
     };
 }
 
