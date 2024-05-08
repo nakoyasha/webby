@@ -56,7 +56,7 @@ export const DatabaseSystem = {
     async getBuilds(limit: number = defaultPageLimit, smol: boolean = false): Promise<BuildData[]> {
         const filter: Record<any, any> = smol && SMOL_FILTER || REGULAR_FILTER
 
-        const fetchedBuilds = await BuildModel.find().limit(limit).select(filter).exec();
+        const fetchedBuilds = await BuildModel.find().sort({ built_on: -1 }).limit(limit).select(filter).exec();
         const builds: BuildData[] = []
 
         for (const build of fetchedBuilds) {
@@ -123,7 +123,7 @@ export const DatabaseSystem = {
         const existingBuildDataExists = existingBuildData != undefined
 
         const newBranch = build.branches[0]
-        const isNewBranch = build.branches.find(branch => branch == newBranch) !== undefined
+        const isNewBranch = existingBuildData.branches.find(branch => branch == newBranch) !== undefined
 
         if (existingBuildDataExists && isNewBranch) {
             logger.log(`Build ${build.build_number} has been spotted on a new branch: ${newBranch}`)
