@@ -31,11 +31,14 @@ export default function DiffItem(props: DiffItemProps) {
 
   if (isChange) {
     return (
-      <div>
-        <span className="diff-change-remove">-{props.diff.oldValue}</span>
-        <span className="diff-change-add">+{props.diff.newValue}</span>
-      </div>
+      <>
+        <span className="diff-item"># Updated</span>
+        <span className="diff-remove diff-item">{props.diff.oldValue}</span>
+        <span className="diff-add diff-item">{props.diff.newValue}</span>
+      </>
     );
+  } else if (isRemove) {
+    return <span className={className}>{props.diff.key}</span>;
   } else {
     return <span className={className}>{value}</span>;
   }
