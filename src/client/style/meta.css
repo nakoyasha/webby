@@ -5,8 +5,8 @@
   --brighter-menubar-background: rgba(71, 56, 76, 1);
   --dim-background: rgba(33, 37, 41, .5);
   --footer-background: rgba(61, 46, 66, .2);
-  --button-background: rgba(44, 34, 48, 0.3);
-  --button-background-hover: rgba(44, 34, 48, 0);
+  --button-background: rgb(67, 41, 77, 1);
+  --button-background-hover: rgb(77, 51, 87, 1);
   --button-stroke: rgba(255, 255, 255, 0.05);
   --critical: rgb(129, 48, 61);
   --generic-background-color: rgb(61, 46, 66);
@@ -361,6 +361,7 @@ form[aria-vertical="true"] {
   outline: rgba(255, 255, 255, 0.1) solid 2px;
   /* border-radius: 5px; */
 }
+
 
 .hljs {
   background-color: #282828 !important;
