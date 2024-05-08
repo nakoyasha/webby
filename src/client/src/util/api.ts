@@ -1,6 +1,11 @@
 import { BuildData } from "@mizuki-bot/Tracker/Types/BuildData";
 
-export const BASE_URL = document.location.origin
+let BASE_URL = document.location.origin
+
+// a fix for running both the express server and a vite live-server at the same time
+if (BASE_URL.includes("localhost")) {
+    BASE_URL = "http://localhost"
+}
 
 export default function makeExperimentsURL(buildHash: string) {
     return new URL(`api/build/${buildHash}/experiments`, BASE_URL);
