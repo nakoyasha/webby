@@ -130,22 +130,30 @@ export const DatabaseSystem = {
     },
 
     async createBuildData(build: BuildData) {
+        const hasDuplicateBranches = build.branches.length > new Set(build.branches).size
+
+        if (hasDuplicateBranches) {
+            logger.error(`Build ${build.build_number} has duplicate branches!`)
+            return;
+        }
+
         const existingBuildData = await this.getBuildData(build.build_hash)
         const existingBuildDataExists = existingBuildData != undefined
 
         if (existingBuildDataExists) {
             const newBranch = build.branches[0]
-            const isNewBranch = existingBuildData.branches.find(branch => branch == newBranch) !== undefined
+            const isNewBranch = existingBuildData.branches.includes(newBranch)
 
             if (!isNewBranch) {
                 return;
             }
 
             logger.log(`Build ${build.build_number} has been spotted on a new branch: ${newBranch}`)
-            const newBranches = [
+
+            const newBranches = new Set([
                 ...existingBuildData.branches,
                 ...build.branches
-            ]
+            ])
 
             await BuildModel.updateMany({
                 latest: {
@@ -154,7 +162,7 @@ export const DatabaseSystem = {
                 }
             }, {
                 $pull: {
-                    latest: newBranches
+                    latest: { $in: newBranches }
                 }
             })
 
@@ -168,15 +176,15 @@ export const DatabaseSystem = {
         }
 
         const buildData = new BuildModel(build);
-        await new Promise((resolve, reject) => {
+        buildData.latest = build.branches
+
+        try {
             buildData.save()
-                .then(resolve)
-                .catch((err) => {
-                    logger.error(
-                        `BuildData save for ${build.build_hash} has failed: ${err.message}\nCause: ${err.cause}`,
-                    );
-                    reject()
-                })
-        })
+        } catch (err: any) {
+            logger.error(
+                `BuildData save for ${build.build_hash} has failed: ${err.message}\nCause: ${err.cause}`,
+            );
+            throw err;
+        }
     },
 };
