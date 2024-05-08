@@ -39,7 +39,7 @@ export default function BuildDetails(props: {
                     className={"tooltip build-indicator " + tooltipKey}
                     key={branchName}
                     data-tooltip-id={tooltipKey}
-                    data-tooltip-content={`This is the latest ${branchName} build`}
+                    data-tooltip-content={`This build exists on ${branchName}`}
                     data-tooltip-place="top"
                   >
                     <Tooltip
