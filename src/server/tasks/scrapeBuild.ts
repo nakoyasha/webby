@@ -13,11 +13,11 @@ const logger = new Logger("Tasks/ScrapeBuild");
 async function saveBuild(branch: DiscordBranch, lastBuild?: BuildData) {
     try {
         logger.log(`Compiling current ${branch} build..`);
-        const build = (await compileBuildData(branch, undefined, lastBuild)) as BuildData;
+        const build = await compileBuildData(branch, undefined, lastBuild)
 
         logger.log(`Saving build ${build.build_number}`);
         try {
-            const model = DatabaseSystem.createBuildData(build);
+            await DatabaseSystem.createBuildData(build);
         } catch (err) {
             logger.log(`Build ${build.build_number} has failed to save because ${err}`);
         } finally {
