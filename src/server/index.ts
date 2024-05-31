@@ -22,7 +22,7 @@ export const server = {
     logger: new Logger("webby"),
     plugins: [
         new ConfigurationPlugin(),
-        new AntiBotPlugin(),
+        // new AntiBotPlugin(),
         new StaticPlugin(),
         new CORSPlugin(),
         new APIPlugin(),
